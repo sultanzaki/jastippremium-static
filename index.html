@@ -1,0 +1,2718 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jastip Premium — Jasa Titip Jakarta Premium Outlet</title>
+    <meta name="description" content="Jasa titip Jakarta Premium Outlet (JPO). Titip barang apa pun dari tenant mana pun — sepatu, baju, tas, parfum. Berbasis di Alam Sutera, Tangerang Selatan." />
+    <meta name="theme-color" content="#F3F1EE" />
+    <meta property="og:title" content="Jastip Premium — Jasa Titip Jakarta Premium Outlet" />
+    <meta property="og:description" content="Kami yang antre di JPO, kamu yang pakai. Titip barang apa pun dari tenant mana pun." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231E1C1B'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='15' fill='%23F3F1EE' text-anchor='middle'%3EJP%3C/text%3E%3C/svg%3E" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================
+           DESIGN TOKENS — same premium style (warm dark)
+           ========================================================== */
+        :root {
+            --bg: #F5F1EE;
+            --paper: #FFFFFF;
+            --ink: #241E1E;
+            --ink-soft: #6B6663;
+            --ink-faint: #9A9491;
+            --deep: #33262A;
+            --accent: #96606A;
+            --tint: #F0E5E2;
+            --line: #E2DCD6;
+            --line-strong: #CBC4BC;
+
+            --wrap: 1280px;
+            --gut: clamp(18px, 5vw, 60px);
+            --header-h: 66px;
+
+            --f-display: 'Instrument Serif', Georgia, serif;
+            --f-sans: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+            --f-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+            --ease: cubic-bezier(.22, .61, .36, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--f-sans);
+            font-size: 16px;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        button {
+            font: inherit;
+            color: inherit;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        :focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        /* ==========================================================
+           TYPE PRIMITIVES
+           ========================================================== */
+        .display {
+            font-family: var(--f-display);
+            font-weight: 400;
+            line-height: 1.02;
+            letter-spacing: -0.015em;
+        }
+        .display em {
+            font-style: italic;
+        }
+        .eyebrow {
+            font-family: var(--f-mono);
+            font-size: .68rem;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+        }
+        .mono {
+            font-family: var(--f-mono);
+            font-variant-numeric: tabular-nums;
+        }
+        .lede {
+            color: var(--ink-soft);
+            font-size: 1.02rem;
+            max-width: 46ch;
+        }
+
+        .wrap {
+            max-width: var(--wrap);
+            margin: 0 auto;
+            padding-left: var(--gut);
+            padding-right: var(--gut);
+        }
+
+        /* section rhythm */
+        .band {
+            padding-block: clamp(64px, 9vw, 118px);
+        }
+        .band--tight {
+            padding-block: clamp(48px, 6vw, 80px);
+        }
+
+        .head {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: clamp(32px, 4vw, 54px);
+        }
+        .head h2 {
+            font-family: var(--f-display);
+            font-weight: 400;
+            font-size: clamp(2rem, 4.4vw, 3.3rem);
+            line-height: 1.05;
+            letter-spacing: -.02em;
+        }
+        .head h2 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+        .head p {
+            color: var(--ink-soft);
+            max-width: 52ch;
+            font-size: .97rem;
+        }
+
+        /* ==========================================================
+           ANNOUNCEMENT
+           ========================================================== */
+        .ticker {
+            background: var(--ink);
+            color: #E6E1DA;
+            font-family: var(--f-mono);
+            font-size: .7rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 9px 16px;
+        }
+        .ticker span {
+            opacity: .55;
+            margin-inline: 10px;
+        }
+        .ticker .tk-more {
+            margin-inline: 6px;
+        }
+
+        /* ==========================================================
+           HEADER
+           ========================================================== */
+        .masthead {
+            position: sticky;
+            top: 0;
+            z-index: 60;
+            height: var(--header-h);
+            display: flex;
+            align-items: center;
+            background: rgba(243, 241, 238, .82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid transparent;
+            transition: border-color .3s var(--ease), background .3s var(--ease);
+        }
+        .masthead.is-stuck {
+            border-bottom-color: var(--line);
+        }
+        .masthead .wrap {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            width: 100%;
+            gap: 16px;
+        }
+
+        .wordmark {
+            font-family: var(--f-display);
+            font-size: 1.42rem;
+            letter-spacing: .01em;
+            grid-column: 2;
+            justify-self: center;
+            white-space: nowrap;
+        }
+        .wordmark .dot {
+            color: var(--accent);
+        }
+
+        .navlinks {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            grid-column: 1;
+        }
+        .navlinks a {
+            font-size: .78rem;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            position: relative;
+            padding-block: 4px;
+            transition: color .2s;
+        }
+        .navlinks a::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 1px;
+            width: 0;
+            background: var(--ink);
+            transition: width .3s var(--ease);
+        }
+        .navlinks a:hover {
+            color: var(--ink);
+        }
+        .navlinks a:hover::after {
+            width: 100%;
+        }
+
+        .head-right {
+            grid-column: 3;
+            justify-self: end;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            font-size: .78rem;
+            letter-spacing: .11em;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding: 13px 24px;
+            border-radius: 4px;
+            transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .2s var(--ease);
+        }
+        .btn svg {
+            width: 15px;
+            height: 15px;
+            flex: none;
+        }
+        .btn--solid {
+            background: var(--ink);
+            color: #FAF8F5;
+        }
+        .btn--solid:hover {
+            background: var(--accent);
+        }
+        .btn--line {
+            border: 1px solid var(--line-strong);
+            color: var(--ink);
+        }
+        .btn--line:hover {
+            border-color: var(--ink);
+            background: var(--ink);
+            color: #FAF8F5;
+        }
+        .btn--sm {
+            padding: 10px 18px;
+            font-size: .72rem;
+        }
+
+        .burger {
+            display: none;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .burger span {
+            display: block;
+            width: 20px;
+            height: 1.5px;
+            background: var(--ink);
+            transition: transform .3s var(--ease), opacity .2s;
+        }
+        .burger.is-open span:nth-child(1) {
+            transform: translateY(6.5px) rotate(45deg);
+        }
+        .burger.is-open span:nth-child(2) {
+            opacity: 0;
+        }
+        .burger.is-open span:nth-child(3) {
+            transform: translateY(-6.5px) rotate(-45deg);
+        }
+
+        /* drawer */
+        .drawer {
+            position: fixed;
+            inset: 0;
+            z-index: 70;
+            background: var(--bg);
+            padding: calc(var(--header-h) + 40px) var(--gut) 40px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-12px);
+            transition: opacity .3s var(--ease), transform .35s var(--ease), visibility .3s;
+        }
+        .drawer.is-open {
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+        }
+        .drawer a:not(.btn) {
+            font-family: var(--f-display);
+            font-size: 2.4rem;
+            line-height: 1.5;
+            border-bottom: 1px solid var(--line);
+            padding-block: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        .drawer a:not(.btn) .idx {
+            font-family: var(--f-mono);
+            font-size: .68rem;
+            color: var(--ink-faint);
+            letter-spacing: .1em;
+        }
+        .drawer .btn {
+            margin-top: 32px;
+        }
+
+        /* ==========================================================
+           HERO
+           ========================================================== */
+        .hero {
+            padding-top: clamp(40px, 6vw, 76px);
+            padding-bottom: clamp(50px, 7vw, 90px);
+        }
+        .hero-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+            gap: clamp(30px, 5vw, 70px);
+            align-items: center;
+        }
+        .hero h1 {
+            font-family: var(--f-display);
+            font-weight: 400;
+            font-size: clamp(2.7rem, 6.6vw, 5.1rem);
+            line-height: .98;
+            letter-spacing: -.025em;
+            margin-top: 20px;
+        }
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+        .hero .lede {
+            margin-top: 22px;
+        }
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+
+        .trust {
+            display: flex;
+            gap: clamp(20px, 4vw, 46px);
+            margin-top: 44px;
+            padding-top: 26px;
+            border-top: 1px solid var(--line);
+            flex-wrap: wrap;
+        }
+        .trust div {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .trust strong {
+            font-family: var(--f-display);
+            font-size: 1.85rem;
+            font-weight: 400;
+            line-height: 1;
+        }
+        .trust span {
+            font-family: var(--f-mono);
+            font-size: .65rem;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+        }
+
+        /* --- signature: hanging tags --- */
+        .hero-visual {
+            position: relative;
+            height: clamp(400px, 46vw, 560px);
+        }
+        .hangtag {
+            position: absolute;
+            width: 44%;
+            animation: drop .9s var(--ease) both;
+        }
+        .hangtag .string {
+            position: absolute;
+            left: 26px;
+            top: -34px;
+            width: 1px;
+            height: 36px;
+            background: linear-gradient(to bottom, transparent, var(--line-strong));
+        }
+        .hangtag .frame {
+            background: var(--paper);
+            padding: 9px 9px 0;
+            box-shadow: 0 18px 44px rgba(30, 28, 27, .13), 0 2px 6px rgba(30, 28, 27, .06);
+            border: 1px solid rgba(255, 255, 255, .7);
+        }
+        .hangtag .frame img {
+            width: 100%;
+            aspect-ratio: 3/4;
+            object-fit: cover;
+            background: var(--tint);
+        }
+        .hangtag .plate {
+            background: var(--paper);
+            padding: 12px 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .hangtag .eyelet {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            border: 1px solid var(--line-strong);
+            flex: none;
+        }
+        .hangtag .plate-txt {
+            min-width: 0;
+            flex: 1;
+            display: block;
+        }
+        .hangtag .t-name {
+            display: block;
+            font-size: .76rem;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hangtag .t-price {
+            display: block;
+            font-family: var(--f-mono);
+            font-size: .68rem;
+            color: var(--accent);
+            letter-spacing: .02em;
+            margin-top: 2px;
+        }
+
+        .hangtag.main {
+            width: 50%;
+            left: 24%;
+            top: 6%;
+            z-index: 3;
+        }
+        .hangtag.left {
+            left: 0;
+            top: 34%;
+            z-index: 2;
+            transform: rotate(-4deg);
+            animation-delay: .1s;
+        }
+        .hangtag.right {
+            right: 0;
+            top: 22%;
+            z-index: 1;
+            transform: rotate(3.5deg);
+            animation-delay: .2s;
+        }
+
+        @keyframes drop {
+            from {
+                opacity: 0;
+                transform: translateY(-26px) rotate(0deg);
+            }
+        }
+        .hangtag.left {
+            animation-name: dropL;
+        }
+        .hangtag.right {
+            animation-name: dropR;
+        }
+        @keyframes dropL {
+            from {
+                opacity: 0;
+                transform: translateY(-26px) rotate(-8deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate(-4deg);
+            }
+        }
+        @keyframes dropR {
+            from {
+                opacity: 0;
+                transform: translateY(-26px) rotate(8deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate(3.5deg);
+            }
+        }
+
+        /* ==========================================================
+           BRAND STRIP
+           ========================================================== */
+        .strip {
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            overflow: hidden;
+            padding-block: 18px;
+        }
+        .strip-track {
+            display: flex;
+            gap: 0;
+            width: max-content;
+            animation: slide 34s linear infinite;
+        }
+        .strip-track span {
+            font-family: var(--f-mono);
+            font-size: .72rem;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            padding-inline: 26px;
+            white-space: nowrap;
+        }
+        .strip-track span::after {
+            content: "◦";
+            margin-left: 26px;
+            opacity: .5;
+        }
+        @keyframes slide {
+            to {
+                transform: translateX(-50%);
+            }
+        }
+        .strip:hover .strip-track {
+            animation-play-state: paused;
+        }
+
+        /* ==========================================================
+           PROMISES
+           ========================================================== */
+        .promises {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+        }
+        .promise {
+            padding: 30px 26px;
+            border-left: 1px solid var(--line);
+        }
+        .promise:first-child {
+            border-left: none;
+            padding-left: 0;
+        }
+        .promise h4 {
+            font-size: .95rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            letter-spacing: -.01em;
+        }
+        .promise p {
+            font-size: .85rem;
+            color: var(--ink-soft);
+            line-height: 1.55;
+        }
+        .promise .num {
+            font-family: var(--f-mono);
+            font-size: .65rem;
+            color: var(--accent);
+            letter-spacing: .12em;
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        #etalase {
+            padding-top: clamp(18px, 3vw, 38px);
+        }
+
+        /* ==========================================================
+           ETALASE — TOOLBAR (English catalog)
+           ========================================================== */
+        .toolbar {
+            position: sticky;
+            top: var(--header-h);
+            z-index: 40;
+            background: rgba(243, 241, 238, .92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 38px;
+        }
+        .toolbar-in {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding-block: 12px;
+        }
+        .tabs {
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            flex: 1;
+        }
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .tab {
+            font-family: var(--f-mono);
+            font-size: .72rem;
+            letter-spacing: .09em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+            padding: 8px 14px;
+            white-space: nowrap;
+            border-radius: 2px;
+            transition: color .2s, background .2s;
+        }
+        .tab:hover {
+            color: var(--ink);
+        }
+        .tab.is-active {
+            background: var(--ink);
+            color: #FAF8F5;
+        }
+
+        .tool-fields {
+            display: flex;
+            gap: 8px;
+            flex: none;
+        }
+        .search {
+            position: relative;
+            flex: none;
+            width: 200px;
+        }
+        .select {
+            position: relative;
+            flex: none;
+            width: 168px;
+        }
+        .select select {
+            width: 100%;
+            font-family: var(--f-sans);
+            font-size: .9rem;
+            color: var(--ink);
+            -webkit-appearance: none;
+            appearance: none;
+            padding: 9px 30px 9px 12px;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: border-color .2s;
+            text-overflow: ellipsis;
+        }
+        .select select:focus {
+            outline: none;
+            border-color: var(--ink);
+        }
+        .select.is-on select {
+            border-color: var(--ink);
+            background: var(--ink);
+            color: #FAF8F5;
+        }
+        .select.is-on svg {
+            color: #FAF8F5;
+        }
+        .select svg {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: var(--ink-faint);
+            pointer-events: none;
+        }
+        .search input {
+            width: 100%;
+            font-family: var(--f-sans);
+            font-size: .9rem;
+            -webkit-appearance: none;
+            appearance: none;
+            padding: 9px 12px 9px 34px;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: 3px;
+            color: var(--ink);
+            transition: border-color .2s;
+        }
+        .search input:focus {
+            outline: none;
+            border-color: var(--ink);
+        }
+        .search input::placeholder {
+            color: var(--ink-faint);
+        }
+        .search svg {
+            position: absolute;
+            left: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: var(--ink-faint);
+        }
+
+        /* ==========================================================
+           ETALASE — GRID
+           ========================================================== */
+        .cat-block {
+            margin-bottom: clamp(46px, 6vw, 76px);
+        }
+        .cat-head {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+        .cat-head h3 {
+            font-family: var(--f-display);
+            font-size: 1.7rem;
+            font-weight: 400;
+            letter-spacing: -.01em;
+        }
+        .cat-head .rule {
+            flex: 1;
+            height: 1px;
+            background: var(--line);
+        }
+        .cat-head .count {
+            font-family: var(--f-mono);
+            font-size: .68rem;
+            color: var(--ink-faint);
+            letter-spacing: .1em;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(14px, 2vw, 26px) clamp(12px, 1.6vw, 22px);
+        }
+
+        .card {
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .card-media {
+            position: relative;
+            overflow: hidden;
+            background: var(--tint);
+            aspect-ratio: 3/4;
+            border-radius: 5px;
+            transition: box-shadow .35s var(--ease);
+        }
+        .card:hover .card-media {
+            box-shadow: 0 16px 34px rgba(30, 28, 27, .11);
+        }
+        .card-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .7s var(--ease), opacity .5s;
+        }
+        .card:hover .card-media img {
+            transform: scale(1.045);
+        }
+        .card-media .veil {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 11px;
+            background: linear-gradient(to top, rgba(30, 28, 27, .62), transparent);
+            color: #fff;
+            font-family: var(--f-mono);
+            font-size: .66rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .3s var(--ease), transform .3s var(--ease);
+        }
+        .card:hover .veil,
+        .card:focus-visible .veil {
+            opacity: 1;
+            transform: none;
+        }
+        .flag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: var(--f-mono);
+            font-size: .6rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            background: var(--paper);
+            color: var(--ink);
+            padding: 5px 9px;
+            border-radius: 2px;
+        }
+        .flag.low {
+            background: var(--accent);
+            color: #fff;
+        }
+        .flag.out {
+            background: rgba(30, 28, 27, .78);
+            color: #fff;
+        }
+        .flag.discount {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .card-body {
+            padding-top: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+        .card-brand {
+            font-family: var(--f-mono);
+            font-size: .63rem;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+        }
+        .card-name {
+            font-size: .93rem;
+            font-weight: 500;
+            line-height: 1.35;
+            letter-spacing: -.005em;
+            overflow-wrap: anywhere;
+        }
+        .card-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 2px;
+        }
+        .card-price-original {
+            font-family: var(--f-mono);
+            font-size: .75rem;
+            color: var(--ink-faint);
+            text-decoration: line-through;
+        }
+        .card-price-selling {
+            font-family: var(--f-mono);
+            font-size: .95rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .card-size {
+            font-size: .75rem;
+            color: var(--ink-soft);
+        }
+        .card-cta {
+            margin-top: 12px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid var(--line-strong);
+            border-radius: 3px;
+            font-size: .72rem;
+            letter-spacing: .11em;
+            text-transform: uppercase;
+            transition: background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+        }
+        .card-cta:hover {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: #FAF8F5;
+        }
+        .card-cta[disabled] {
+            color: var(--ink-faint);
+            border-style: dashed;
+            cursor: not-allowed;
+            background: none;
+        }
+        .card.is-out .card-media img {
+            filter: grayscale(.75);
+            opacity: .6;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 70px 20px;
+            border: 1px dashed var(--line-strong);
+            border-radius: 4px;
+        }
+        .empty h4 {
+            font-family: var(--f-display);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+        .empty p {
+            color: var(--ink-soft);
+            font-size: .9rem;
+            margin-bottom: 18px;
+        }
+        .empty-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* skeleton */
+        .sk {
+            background: linear-gradient(90deg, #E7E3DD 25%, #F0EDE7 50%, #E7E3DD 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            border-radius: 3px;
+        }
+        @keyframes shimmer {
+            to {
+                background-position: -200% 0;
+            }
+        }
+        .sk-card .sk-img {
+            aspect-ratio: 3/4;
+        }
+        .sk-card .sk-l1 {
+            height: 9px;
+            width: 40%;
+            margin-top: 14px;
+        }
+        .sk-card .sk-l2 {
+            height: 13px;
+            width: 80%;
+            margin-top: 9px;
+        }
+        .sk-card .sk-l3 {
+            height: 11px;
+            width: 34%;
+            margin-top: 9px;
+        }
+
+        /* ==========================================================
+           TESTIMONI
+           ========================================================== */
+        .testi {
+            background: var(--paper);
+            border-block: 1px solid var(--line);
+        }
+        .testi-stage {
+            position: relative;
+            max-width: 820px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .testi-viewport {
+            overflow: hidden;
+        }
+        .testi-track {
+            display: flex;
+            transition: transform .6s var(--ease);
+        }
+        .testi-slide {
+            min-width: 100%;
+            padding-inline: 8px;
+        }
+        .stars {
+            color: var(--accent);
+            letter-spacing: .28em;
+            font-size: .8rem;
+            margin-bottom: 20px;
+        }
+        .stars .off {
+            color: var(--line-strong);
+        }
+        .testi-text {
+            font-family: var(--f-display);
+            font-size: clamp(1.35rem, 3vw, 2.1rem);
+            line-height: 1.34;
+            letter-spacing: -.015em;
+        }
+        .testi-name {
+            display: block;
+            margin-top: 24px;
+            font-family: var(--f-mono);
+            font-size: .68rem;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+        }
+        .testi-nav {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 18px;
+            margin-top: 34px;
+        }
+        .testi-arrow {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--line-strong);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            transition: background .2s, color .2s, border-color .2s;
+        }
+        .testi-arrow:hover {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: #FAF8F5;
+        }
+        .dots {
+            display: flex;
+            gap: 7px;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--line-strong);
+            transition: background .25s, width .25s;
+        }
+        .dot.is-active {
+            background: var(--ink);
+            width: 20px;
+            border-radius: 3px;
+        }
+
+        /* ==========================================================
+           STEPS
+           ========================================================== */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(20px, 3vw, 44px);
+            counter-reset: s;
+        }
+        .step {
+            position: relative;
+            padding-top: 26px;
+            border-top: 1px solid var(--ink);
+        }
+        .step .n {
+            font-family: var(--f-mono);
+            font-size: .68rem;
+            letter-spacing: .16em;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 16px;
+        }
+        .step h4 {
+            font-family: var(--f-display);
+            font-size: 1.6rem;
+            font-weight: 400;
+            margin-bottom: 10px;
+            letter-spacing: -.01em;
+        }
+        .step p {
+            font-size: .9rem;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+
+        /* ==========================================================
+           CTA + FOOTER
+           ========================================================== */
+        .cta {
+            background: var(--deep);
+            color: #F1EDE6;
+            text-align: center;
+            padding-block: clamp(60px, 8vw, 100px);
+        }
+        .cta h3 {
+            font-family: var(--f-display);
+            font-size: clamp(1.9rem, 4.4vw, 3.1rem);
+            font-weight: 400;
+            line-height: 1.08;
+            letter-spacing: -.02em;
+        }
+        .cta h3 em {
+            font-style: italic;
+            color: #C7A98E;
+        }
+        .cta p {
+            color: rgba(241, 237, 230, .68);
+            margin: 16px auto 30px;
+            max-width: 44ch;
+            font-size: .97rem;
+        }
+        .cta .btn--solid {
+            background: #F1EDE6;
+            color: var(--deep);
+        }
+        .cta .btn--solid:hover {
+            background: #fff;
+        }
+
+        footer {
+            background: var(--ink);
+            color: #CCC5BD;
+            padding-block: clamp(50px, 6vw, 74px) 0;
+        }
+        .foot-grid {
+            display: grid;
+            grid-template-columns: 1.7fr 1fr 1fr 1.2fr;
+            gap: clamp(26px, 4vw, 54px);
+            padding-bottom: 46px;
+        }
+        .foot-brand .wordmark {
+            color: #F3F1EE;
+            justify-self: start;
+            font-size: 1.5rem;
+        }
+        .foot-brand p {
+            font-size: .87rem;
+            line-height: 1.65;
+            margin-top: 14px;
+            max-width: 34ch;
+            color: rgba(204, 197, 189, .75);
+        }
+        .foot-social {
+            display: flex;
+            gap: 10px;
+            margin-top: 22px;
+        }
+        .foot-social a {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(243, 241, 238, .2);
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            transition: background .2s, border-color .2s, color .2s;
+        }
+        .foot-social a svg {
+            width: 16px;
+            height: 16px;
+        }
+        .foot-social a:hover {
+            background: #F3F1EE;
+            color: var(--ink);
+            border-color: #F3F1EE;
+        }
+        footer h5 {
+            font-family: var(--f-mono);
+            font-size: .65rem;
+            letter-spacing: .17em;
+            text-transform: uppercase;
+            color: #F3F1EE;
+            margin-bottom: 16px;
+        }
+        .foot-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+        .foot-list a,
+        .foot-item {
+            font-size: .87rem;
+            color: rgba(204, 197, 189, .8);
+            transition: color .2s;
+        }
+        .foot-list a:hover {
+            color: #F3F1EE;
+        }
+        .foot-item {
+            display: flex;
+            gap: 9px;
+            align-items: flex-start;
+            margin-bottom: 11px;
+        }
+        .foot-item svg {
+            width: 14px;
+            height: 14px;
+            margin-top: 4px;
+            flex: none;
+            opacity: .6;
+        }
+        .foot-bottom {
+            border-top: 1px solid rgba(243, 241, 238, .12);
+            padding-block: 22px;
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+            font-family: var(--f-mono);
+            font-size: .66rem;
+            letter-spacing: .08em;
+            color: rgba(204, 197, 189, .55);
+        }
+        .foot-bottom a:hover {
+            color: #F3F1EE;
+        }
+        .foot-bottom div {
+            display: flex;
+            gap: 20px;
+        }
+
+        /* ==========================================================
+           QUICK VIEW
+           ========================================================== */
+        .qv {
+            position: fixed;
+            inset: 0;
+            z-index: 90;
+            background: rgba(30, 28, 27, .45);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .3s var(--ease), visibility .3s;
+        }
+        .qv.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .qv-panel {
+            background: var(--paper);
+            width: min(920px, 100%);
+            max-height: 88vh;
+            overflow: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            position: relative;
+            border-radius: 6px;
+            transform: translateY(14px) scale(.99);
+            transition: transform .35s var(--ease);
+        }
+        .qv.is-open .qv-panel {
+            transform: none;
+        }
+        .qv-media {
+            background: var(--tint);
+        }
+        .qv-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 4/5;
+        }
+        .qv-body {
+            padding: clamp(24px, 3.4vw, 44px);
+            display: flex;
+            flex-direction: column;
+        }
+        .qv-brand {
+            font-family: var(--f-mono);
+            font-size: .66rem;
+            letter-spacing: .17em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            align-self: flex-start;
+            padding: 0;
+            border-bottom: 1px solid transparent;
+            transition: color .2s, border-color .2s;
+        }
+        .qv-brand:hover {
+            color: var(--ink);
+            border-bottom-color: var(--line-strong);
+        }
+        .qv-name {
+            font-family: var(--f-display);
+            font-size: clamp(1.6rem, 3vw, 2.2rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-top: 10px;
+            letter-spacing: -.02em;
+            overflow-wrap: anywhere;
+        }
+        .qv-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+        .qv-price-original {
+            font-family: var(--f-mono);
+            font-size: .9rem;
+            color: var(--ink-faint);
+            text-decoration: line-through;
+        }
+        .qv-price-selling {
+            font-family: var(--f-mono);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .qv-meta {
+            margin-top: 22px;
+            padding-top: 20px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .qv-row {
+            display: flex;
+            gap: 12px;
+            font-size: .87rem;
+        }
+        .qv-row dt {
+            font-family: var(--f-mono);
+            font-size: .65rem;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            width: 76px;
+            flex: none;
+            padding-top: 3px;
+        }
+        .qv-row dd {
+            color: var(--ink-soft);
+        }
+        .qv-stock {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: .87rem;
+        }
+        .qv-stock::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #5A7A52;
+        }
+        .qv-stock.low {
+            color: var(--accent);
+        }
+        .qv-stock.low::before {
+            background: var(--accent);
+        }
+        .qv-stock.out {
+            color: var(--ink-faint);
+        }
+        .qv-stock.out::before {
+            background: var(--ink-faint);
+        }
+        .qv-actions {
+            margin-top: auto;
+            padding-top: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .qv-actions .btn {
+            width: 100%;
+        }
+        .qv-note {
+            font-size: .76rem;
+            color: var(--ink-faint);
+            text-align: center;
+            margin-top: 4px;
+        }
+        .qv-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 2;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .9);
+            display: grid;
+            place-items: center;
+            transition: background .2s;
+        }
+        .qv-close:hover {
+            background: var(--bg);
+        }
+
+        /* ==========================================================
+           FLOATING WA (mobile)
+           ========================================================== */
+        .fab {
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            z-index: 55;
+            display: none;
+            align-items: center;
+            gap: 9px;
+            background: var(--ink);
+            color: #FAF8F5;
+            padding: 13px 18px;
+            border-radius: 999px;
+            box-shadow: 0 10px 30px rgba(30, 28, 27, .28);
+            font-size: .76rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        .fab svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ==========================================================
+           REVEAL
+           ========================================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity .7s var(--ease), transform .7s var(--ease);
+        }
+        .reveal.is-in {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* ==========================================================
+           RESPONSIVE
+           ========================================================== */
+        @media (max-width:1080px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .promises {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .promise:nth-child(3) {
+                border-left: none;
+                padding-left: 0;
+            }
+            .foot-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width:900px) {
+            .navlinks {
+                display: none;
+            }
+            .burger {
+                display: flex;
+            }
+            .masthead .wrap {
+                grid-template-columns: 1fr auto;
+            }
+            .wordmark {
+                grid-column: 1;
+                justify-self: start;
+            }
+            .head-right {
+                grid-column: 2;
+            }
+            .head-right .btn {
+                display: none;
+            }
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-visual {
+                height: auto;
+                display: flex;
+                gap: 14px;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                padding: 34px 0 10px;
+                scrollbar-width: none;
+            }
+            .hero-visual::-webkit-scrollbar {
+                display: none;
+            }
+            .hero-visual .hangtag {
+                position: relative;
+                width: 64%;
+                min-width: 64%;
+                flex: 0 0 64%;
+                left: auto;
+                right: auto;
+                top: auto;
+                transform: none !important;
+                scroll-snap-align: start;
+                animation: none;
+                opacity: 1;
+            }
+            .hangtag .string {
+                top: -30px;
+                height: 30px;
+            }
+            .steps {
+                grid-template-columns: 1fr;
+                gap: 26px;
+            }
+            .toolbar-in {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .tool-fields {
+                order: -1;
+                width: 100%;
+            }
+            .select {
+                flex: 0 0 auto;
+                width: 150px;
+            }
+            .search {
+                flex: 1;
+                width: auto;
+            }
+            .qv-panel {
+                grid-template-columns: 1fr;
+                max-height: 92vh;
+            }
+            .qv-media img {
+                aspect-ratio: 4/3;
+            }
+            .fab {
+                display: inline-flex;
+            }
+        }
+        @media (max-width:660px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .promises {
+                grid-template-columns: 1fr;
+            }
+            .promise {
+                border-left: none;
+                padding-left: 0;
+                padding-block: 22px;
+                border-top: 1px solid var(--line);
+            }
+            .promise:first-child {
+                border-top: none;
+                padding-top: 0;
+            }
+            .foot-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .drawer a {
+                font-size: 1.9rem;
+            }
+            .card-cta {
+                padding: 9px;
+                font-size: .66rem;
+            }
+            .toolbar-in {
+                padding-block: 9px;
+            }
+            .search input,
+            .select select {
+                font-size: 16px;
+                padding-block: 8px;
+            }
+            .select {
+                width: 138px;
+            }
+            .tab {
+                padding: 7px 12px;
+            }
+            .ticker {
+                font-size: .63rem;
+                padding: 8px 12px;
+            }
+            .ticker .tk-more {
+                display: none;
+            }
+            .trust {
+                gap: 18px 26px;
+                margin-top: 34px;
+            }
+            .trust strong {
+                font-size: 1.55rem;
+            }
+            .hero-visual .hangtag {
+                width: 72%;
+                min-width: 72%;
+                flex-basis: 72%;
+            }
+            .qv {
+                padding: 0;
+                align-items: flex-end;
+            }
+            .qv-panel {
+                max-height: 94vh;
+                border-radius: 6px 6px 0 0;
+            }
+        }
+        @media (max-width:380px) {
+            .grid {
+                gap: 14px 10px;
+            }
+            .card-name {
+                font-size: .87rem;
+            }
+            .card-price-selling {
+                font-size: .85rem;
+            }
+            .card-price-original {
+                font-size: .7rem;
+            }
+            .tab {
+                font-size: .66rem;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            *,
+            *::before,
+            *::after {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important;
+            }
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===================== ANNOUNCEMENT ===================== -->
+    <div class="ticker">
+        Open jastip semua tenant Jakarta Premium Outlet <span class="tk-more">·</span><span class="tk-more"> Dibalas 09.00–20.00 WIB</span>
+    </div>
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="masthead" id="masthead">
+        <div class="wrap">
+            <nav class="navlinks">
+                <a href="#etalase">Catalog</a>
+                <a href="#caraKerja">Cara titip</a>
+                <a href="#testimoni">Testimoni</a>
+            </nav>
+            <a href="#top" class="wordmark">Jastip Premium<span class="dot">.</span></a>
+            <div class="head-right">
+                <a class="btn btn--solid btn--sm" data-wa href="#">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z"/></svg>
+                    Chat admin
+                </a>
+                <button class="burger" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="drawer">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="drawer" id="drawer" aria-hidden="true">
+        <a href="#etalase" data-close>Catalog <span class="idx">01</span></a>
+        <a href="#caraKerja" data-close>Cara titip <span class="idx">02</span></a>
+        <a href="#testimoni" data-close>Testimoni <span class="idx">03</span></a>
+        <a class="btn btn--solid" data-wa data-close href="#">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z"/></svg>
+            Chat admin
+        </a>
+    </div>
+
+    <!-- ===================== HERO ===================== -->
+    <section class="hero wrap" id="top">
+        <div class="hero-grid">
+            <div>
+                <span class="eyebrow">Jakarta Premium Outlet · Alam Sutera</span>
+                <h1>Kami yang <em>antre</em> di JPO, kamu yang pakai.</h1>
+                <p class="lede">Kami buka titipan untuk <strong>barang apa pun di Jakarta Premium Outlet</strong> — tenant mana pun, dari sepatu, baju, tas, sampai parfum. Pilih dari etalase, atau kirim barang incaranmu ke admin.</p>
+                <div class="hero-actions">
+                    <a href="#etalase" class="btn btn--solid">Lihat etalase</a>
+                    <a class="btn btn--line" data-wa href="#">Titip barang dari JPO</a>
+                </div>
+                            </div>
+            <div class="hero-visual" id="heroVisual"></div>
+        </div>
+    </section>
+
+    <!-- ===================== BRAND STRIP ===================== -->
+    <div class="strip" id="brandStrip" hidden>
+        <div class="strip-track" id="brandTrack"></div>
+    </div>
+
+    <!-- ===================== PROMISES ===================== -->
+    <section class="wrap band--tight">
+        <div class="promises reveal">
+            <div class="promise">
+                <span class="num">01</span>
+                <h4>Semua tenant JPO</h4>
+                <p>Tidak terbatas etalase ini. Sebut brand dan barangnya, selama tenantnya ada di Jakarta Premium Outlet, kami belikan.</p>
+            </div>
+            <div class="promise">
+                <span class="num">02</span>
+                <h4>Beli langsung di store</h4>
+                <p>Barang kami ambil sendiri dari tokonya, bukan dari reseller.</p>
+            </div>
+            <div class="promise">
+                <span class="num">03</span>
+                <h4>Harga apa adanya</h4>
+                <p>Harga di etalase sudah termasuk fee titip. Terdapat biaya ongkos kirim.</p>
+            </div>
+            <div class="promise">
+                <span class="num">04</span>
+                <h4>Kirim ke seluruh Indonesia</h4>
+                <p>Berangkat dari Alam Sutera, dikemas rapi, nomor resi dikirim di hari yang sama.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== ETALASE (FULL ENGLISH) ===================== -->
+    <section id="etalase">
+        <div class="wrap">
+            <div class="head reveal">
+                <span class="eyebrow">Catalog</span>
+                <h2>Titipan <em>minggu ini</em></h2>
+                <p>Barang yang sedang kami pegang dari JPO. Ketuk untuk melihat detailnya, lalu pesan lewat WhatsApp — di luar daftar ini pun bisa dititipkan.</p>
+            </div>
+        </div>
+
+        <div class="toolbar" id="toolbar">
+            <div class="wrap">
+                <div class="toolbar-in">
+                    <div class="tabs" id="tabs" role="tablist" aria-label="Filter categories"></div>
+                    <div class="tool-fields">
+                        <div class="select">
+                            <select id="brandSelect" aria-label="Filter brand">
+                                <option value="all">All Brands</option>
+                            </select>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
+                        </div>
+                        <div class="search">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+                            <input type="search" id="searchInput" placeholder="Search items" aria-label="Search items">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wrap">
+            <div id="etalaseLoading"></div>
+
+            <div id="etalaseError" class="empty" style="display:none">
+                <h4>Catalog couldn't load</h4>
+                <p id="etalaseErrorMsg">Check your internet connection and try again.</p>
+                <button class="btn btn--line" onclick="loadEtalase()">Reload</button>
+            </div>
+
+            <div id="etalaseContainer"></div>
+
+            <div id="noResult" class="empty" style="display:none">
+                <h4>No matches found</h4>
+                <p>This catalog only shows a small selection. Just tell us the brand and item — we'll check it at JPO for you.</p>
+                <div class="empty-actions">
+                    <button class="btn btn--line" id="resetFilters">Clear all filters</button>
+                    <a class="btn btn--solid" data-wa href="#">Order this item</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== TESTIMONI ===================== -->
+    <section class="testi band" id="testimoni" style="display:none">
+        <div class="wrap">
+            <div class="testi-stage" id="testiStage">
+                <div class="testi-viewport" id="testiViewport">
+                    <div class="testi-track" id="testiTrack"></div>
+                </div>
+                <div class="testi-nav">
+                    <button class="testi-arrow" id="testiPrev" aria-label="Testimoni sebelumnya">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6" /></svg>
+                    </button>
+                    <div class="dots" id="testiDots"></div>
+                    <button class="testi-arrow" id="testiNext" aria-label="Testimoni berikutnya">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CARA KERJA ===================== -->
+    <section class="wrap band" id="caraKerja">
+        <div class="head reveal">
+            <span class="eyebrow">Cara titip</span>
+            <h2>Tiga langkah, <em>selesai</em></h2>
+        </div>
+        <div class="steps reveal">
+            <div class="step">
+                <span class="n">LANGKAH 01</span>
+                <h4>Pilih barangnya</h4>
+                <p>Ambil dari etalase, atau kirim foto dan nama barang yang kamu incar dari tenant mana pun di JPO.</p>
+            </div>
+            <div class="step">
+                <span class="n">LANGKAH 02</span>
+                <h4>Chat dan bayar</h4>
+                <p>Admin cek ketersediaan di toko, lalu kirim total harga dan nomor rekening.</p>
+            </div>
+            <div class="step">
+                <span class="n">LANGKAH 03</span>
+                <h4>Terima paketnya</h4>
+                <p>Kami belanjakan di JPO, kemas dari Alam Sutera, lalu kirim. Nomor resi masuk ke WhatsApp yang sama.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================== CTA ===================== -->
+    <section class="cta">
+        <div class="wrap">
+            <h3>Barangnya ada di JPO tapi belum <em>masuk</em> etalase?</h3>
+            <p>Kirim foto atau nama barangnya. Kami cek langsung ke tenantnya, lalu kabari ketersediaan dan harganya.</p>
+            <a class="btn btn--solid" data-wa href="#">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z" /></svg>
+                Kirim barang incaranmu
+            </a>
+        </div>
+    </section>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer>
+        <div class="wrap">
+            <div class="foot-grid">
+                <div class="foot-brand">
+                    <span class="wordmark">Jastip Premium<span class="dot">.</span></span>
+                    <p>Jasa titip untuk semua tenant Jakarta Premium Outlet. Kami yang belanja dan antre, kamu tinggal terima paketnya.</p>
+                    <div class="foot-social">
+                        <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".6" fill="currentColor" /></svg>
+                        </a>
+                        <a href="#" aria-label="TikTok" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-3-3.8h-3v13.6a2.7 2.7 0 1 1-2-2.6V9.7a5.7 5.7 0 1 0 5 5.6V9.1a7.3 7.3 0 0 0 4 1.2V7.3a4.3 4.3 0 0 1-1-1.5z" /></svg>
+                        </a>
+                        <a data-wa href="#" aria-label="WhatsApp" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z" /></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h5>Halaman</h5>
+                    <ul class="foot-list">
+                        <li><a href="#etalase">Catalog</a></li>
+                        <li><a href="#caraKerja">Cara titip</a></li>
+                        <li><a href="#testimoni">Testimoni</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5>Kategori</h5>
+                    <ul class="foot-list" id="footCats">
+                        <li><a href="#etalase">Semua barang</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h5>Kontak</h5>
+                    <div class="foot-item">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6z" /></svg>
+                        <span id="waDisplay">+62 851-5542-2502</span>
+                    </div>
+                    <div class="foot-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                        <span>Senin–Sabtu, 09.00–20.00 WIB</span>
+                    </div>
+                    <div class="foot-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>
+                        <span>Alam Sutera, Tangerang Selatan</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="foot-bottom">
+                <span>© <span id="year">2026</span> Jastip Premium</span>
+                <div>
+                    <a href="#">Syarat &amp; ketentuan</a>
+                    <a href="#">Kebijakan privasi</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <a class="fab" data-wa href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z" /></svg>
+        Chat admin
+    </a>
+
+    <!-- ===================== QUICK VIEW ===================== -->
+    <div class="qv" id="quickView" role="dialog" aria-modal="true" aria-labelledby="qvName">
+        <div class="qv-panel">
+            <button class="qv-close" id="qvClose" aria-label="Tutup detail barang">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+            </button>
+            <div class="qv-media"><img id="qvImg" src="" alt=""></div>
+            <div class="qv-body">
+                <button class="qv-brand" id="qvBrand" type="button"></button>
+                <h3 class="qv-name" id="qvName"></h3>
+                <div class="qv-price-row">
+                    <span class="qv-price-original" id="qvPriceOriginal"></span>
+                    <span class="qv-price-selling" id="qvPriceSelling"></span>
+                </div>
+                <dl class="qv-meta">
+                    <div class="qv-row"><dt>Status</dt><dd><span class="qv-stock" id="qvStock"></span></dd></div>
+                    <div class="qv-row" id="qvSizeRow"><dt>Varian</dt><dd id="qvSize"></dd></div>
+                    <!-- Diskon row: hanya persentase, tanpa nominal -->
+                    <div class="qv-row" id="qvDiscountRow"><dt>Diskon</dt><dd id="qvDiscount"></dd></div>
+                    <div class="qv-row"><dt>Kategori</dt><dd id="qvCat"></dd></div>
+                </dl>
+                <div class="qv-actions">
+                    <button class="btn btn--solid" id="qvBuy">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z" /></svg>
+                        Pesan lewat WhatsApp
+                    </button>
+                    <p class="qv-note">Detail barang otomatis terisi di pesanmu.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================================
+           KONFIGURASI
+           ============================================================ */
+        var SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxPPIP-0Pmcn6QsgfvPF_gUVr980tGTgT6l6gDIYSq0DPeWCnFlUcqmO6zAmQwq_017/exec";
+        var WA_NUMBER = "6285121804117";
+
+        var CACHE_KEY = "jastippremium_v2";
+        var CACHE_TTL = 5 * 60 * 1000;
+        var PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3' height='4'%3E%3C/svg%3E";
+        var FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'%3E%3Crect width='300' height='400' fill='%23EBE4DF'/%3E%3Ctext x='150' y='205' font-family='Georgia,serif' font-size='16' fill='%237E5C63' text-anchor='middle'%3EFoto menyusul%3C/text%3E%3C/svg%3E";
+
+        /* ============================================================
+           STATE
+           ============================================================ */
+        var allProducts = [],
+            etalaseProducts = [];
+        var activeFilter = "all",
+            activeBrand = "all",
+            searchQuery = "";
+        var lazyObs = null;
+        var testiSlides = [],
+            testiCurrent = 0,
+            testiTimer = null,
+            testiTouchX = 0;
+        var qvLastFocused = null;
+        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        /* ============================================================
+           HELPERS
+           ============================================================ */
+        function esc(s) {
+            return String(s == null ? "" : s).replace(/[&<>"']/g, function(c) {
+                return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" } [c];
+            });
+        }
+
+        function titleCase(s) { s = String(s || ""); return s.charAt(0).toUpperCase() + s.slice(1); }
+
+        function fmtPrice(v) {
+            var s = String(v == null ? "" : v).trim();
+            if (!s) return "";
+            var cleaned = s.replace(/rp/i, "").replace(/[,\s]/g, "").trim();
+            var num = parseFloat(cleaned);
+            if (!isNaN(num) && num > 0) {
+                return "Rp " + num.toLocaleString("id-ID");
+            }
+            return s;
+        }
+
+        function isYes(v) { var s = String(v || "").toLowerCase().trim(); return s === "ya" || s === "yes" || s === "true" || s ===
+                "1"; }
+
+        function starsHTML(rating) {
+            var n = parseInt(rating, 10);
+            if (isNaN(n)) n = 5;
+            var h = "";
+            for (var i = 0; i < 5; i++) h += i < n ? "★" : '<span class="off">★</span>';
+            return h;
+        }
+
+        function biggerImg(src) { return String(src || "").replace(/w=\d+/, "w=900").replace(/q=\d+/, "q=85"); }
+
+        function waLink(text) { return "https://wa.me/" + WA_NUMBER + (text ? "?text=" + encodeURIComponent(text) : ""); }
+
+        /* semua tombol WA umum */
+        (function initWaLinks() {
+            var generic = "Halo kak, aku mau titip beli barang dari Jakarta Premium Outlet. Boleh dibantu?";
+            var els = document.querySelectorAll("[data-wa]");
+            for (var i = 0; i < els.length; i++) {
+                els[i].setAttribute("href", waLink(generic));
+                els[i].setAttribute("target", "_blank");
+                els[i].setAttribute("rel", "noopener");
+            }
+            var d = document.getElementById("waDisplay");
+            if (d && WA_NUMBER) {
+                var n = WA_NUMBER.replace(/^62/, "");
+                d.textContent = "+62 " + n.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+            }
+            document.getElementById("year").textContent = new Date().getFullYear();
+        })();
+
+        /* ============================================================
+           WHATSAPP ORDER — hanya tampilkan harga jastip, tanpa harga toko
+           ============================================================ */
+        function orderWA(item) {
+            var lines = [
+                "Halo kak, aku mau titip beli barang ini dari JPO:",
+                "",
+                "Barang : " + item.nama,
+                "Brand  : " + (item.brand || "-"),
+                "Varian : " + (item.ukuran || "-"),
+                "Harga : " + fmtPrice(item.harga_jual)
+            ];
+            lines.push("", "Masih ready kak?");
+            window.open(waLink(lines.join("\n")), "_blank");
+        }
+
+        /* ============================================================
+           HEADER / DRAWER
+           ============================================================ */
+        var masthead = document.getElementById("masthead");
+        var burger = document.getElementById("burger");
+        var drawer = document.getElementById("drawer");
+
+        window.addEventListener("scroll", function() {
+            masthead.classList.toggle("is-stuck", window.scrollY > 8);
+        }, { passive: true });
+
+        function setDrawer(open) {
+            drawer.classList.toggle("is-open", open);
+            burger.classList.toggle("is-open", open);
+            burger.setAttribute("aria-expanded", open ? "true" : "false");
+            burger.setAttribute("aria-label", open ? "Tutup menu" : "Buka menu");
+            drawer.setAttribute("aria-hidden", open ? "false" : "true");
+            document.body.style.overflow = open ? "hidden" : "";
+        }
+        burger.addEventListener("click", function() { setDrawer(!drawer.classList.contains("is-open")); });
+        drawer.querySelectorAll("[data-close]").forEach(function(el) {
+            el.addEventListener("click", function() { setDrawer(false); });
+        });
+        document.addEventListener("keydown", function(e) {
+            if (e.key !== "Escape") return;
+            if (drawer.classList.contains("is-open")) setDrawer(false);
+            if (document.getElementById("quickView").classList.contains("is-open")) closeQuickView();
+        });
+
+        /* ============================================================
+           REVEAL ON SCROLL
+           ============================================================ */
+        (function initReveal() {
+            var els = document.querySelectorAll(".reveal");
+            if (reduceMotion || !("IntersectionObserver" in window)) {
+                els.forEach(function(el) { el.classList.add("is-in"); });
+                return;
+            }
+            var io = new IntersectionObserver(function(entries) {
+                entries.forEach(function(en) {
+                    if (en.isIntersecting) { en.target.classList.add("is-in");
+                        io.unobserve(en.target); }
+                });
+            }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+            els.forEach(function(el) { io.observe(el); });
+        })();
+
+        /* ============================================================
+           LAZY IMAGES
+           ============================================================ */
+        function initLazyObs() {
+            if (lazyObs || !("IntersectionObserver" in window)) return;
+            lazyObs = new IntersectionObserver(function(entries, obs) {
+                entries.forEach(function(en) {
+                    if (!en.isIntersecting) return;
+                    var img = en.target;
+                    if (img.dataset.src) img.src = img.dataset.src;
+                    obs.unobserve(img);
+                });
+            }, { rootMargin: "300px 0px" });
+        }
+
+        function observeLazy(root) {
+            initLazyObs();
+            var imgs = root.querySelectorAll("img[data-src]");
+            for (var i = 0; i < imgs.length; i++) {
+                if (lazyObs) lazyObs.observe(imgs[i]);
+                else imgs[i].src = imgs[i].dataset.src;
+            }
+        }
+
+        function imgFallback(img) { img.onerror = null;
+            img.src = FALLBACK_IMG; }
+
+        /* ============================================================
+           CACHE + FETCH
+           ============================================================ */
+        function getCached() {
+            try {
+                var r = sessionStorage.getItem(CACHE_KEY);
+                if (!r) return null;
+                var p = JSON.parse(r);
+                return Date.now() - p.ts < CACHE_TTL ? p.data : null;
+            } catch (e) { return null; }
+        }
+
+        function setCache(d) {
+            try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: d })); } catch (e) {}
+        }
+
+        async function robustFetch(url, retries, delay) {
+            for (var i = 0; i <= retries; i++) {
+                try {
+                    var ctrl = new AbortController();
+                    var timer = setTimeout(function() { ctrl.abort(); }, 12000);
+                    var res = await fetch(url, { signal: ctrl.signal });
+                    clearTimeout(timer);
+                    if (!res.ok) throw new Error("HTTP " + res.status);
+                    return await res.json();
+                } catch (e) {
+                    if (i === retries) throw e;
+                    await new Promise(function(r) { setTimeout(r, delay * (i + 1)); });
+                }
+            }
+        }
+
+        /* ============================================================
+           SKELETON
+           ============================================================ */
+        function skCard() {
+            return '<div class="sk-card"><div class="sk sk-img"></div><div class="sk sk-l1"></div><div class="sk sk-l2"></div><div class="sk sk-l3"></div></div>';
+        }
+
+        function showSkeleton() {
+            var hero = "";
+            ["main", "left", "right"].forEach(function(pos) {
+                hero += '<div class="hangtag ' + pos + '"><div class="frame"><div class="sk" style="aspect-ratio:3/4"></div></div><div class="plate"><span class="eyelet"></span><div class="plate-txt" style="flex:1"><div class="sk" style="height:9px;width:70%"></div><div class="sk" style="height:8px;width:40%;margin-top:6px"></div></div></div></div>';
+            });
+            document.getElementById("heroVisual").innerHTML = hero;
+
+            var cards = "";
+            for (var i = 0; i < 8; i++) cards += skCard();
+            document.getElementById("etalaseLoading").innerHTML =
+                '<div class="cat-block"><div class="cat-head"><div class="sk" style="height:20px;width:130px"></div><div class="rule"></div></div><div class="grid">' + cards +
+                '</div></div>';
+            document.getElementById("etalaseLoading").style.display = "";
+        }
+
+        function hideSkeleton() { document.getElementById("etalaseLoading").style.display = "none"; }
+
+        /* ============================================================
+           NORMALIZE — diskon persen
+           ============================================================ */
+        function pickCaseInsensitive(obj, keys) {
+            var lowerKeys = keys.map(function(k) { return k.toLowerCase().trim(); });
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    var lower = key.toLowerCase().trim();
+                    if (lowerKeys.indexOf(lower) !== -1) {
+                        var val = obj[key];
+                        if (val !== undefined && val !== null && String(val).trim() !== "") {
+                            return String(val).trim();
+                        }
+                    }
+                }
+            }
+            return "";
+        }
+
+        function normalizeRow(r) {
+            var hargaToko = pickCaseInsensitive(r, ["ORI STORE PRICE", "HARGA TOKO", "harga_toko"]);
+            var hargaJual = pickCaseInsensitive(r, ["SELLING PRICE", "HARGA JUAL", "harga_jual"]);
+            var hargaDiskon = pickCaseInsensitive(r, ["DISCOUNTED STORE PRICE", "DISKON", "diskon"]);
+            var selisih = pickCaseInsensitive(r, ["SELISIH", "selisih"]);
+
+            var tokoNum = parseFloat(hargaToko.replace(/[^\d.]/g, "")) || 0;
+            var jualNum = parseFloat(hargaJual.replace(/[^\d.]/g, "")) || 0;
+            var diskonValue = Math.max(0, tokoNum - jualNum);
+            var diskonPersen = (tokoNum > 0) ? (diskonValue / tokoNum) * 100 : 0;
+
+            return {
+                nama: pickCaseInsensitive(r, ["PRODUCT", "product", "nama", "Nama"]),
+                brand: pickCaseInsensitive(r, ["BRAND", "brand", "Brand"]),
+                kategori: pickCaseInsensitive(r, ["CATEGORY", "category", "kategori", "Kategori"]) || "lainnya",
+                ukuran: pickCaseInsensitive(r, ["VARIANT", "variant", "ukuran", "Ukuran"]),
+                harga_toko: hargaToko,
+                harga_jual: hargaJual || hargaToko,
+                diskon: hargaDiskon || (diskonValue > 0 ? String(diskonValue) : ""),
+                fee: pickCaseInsensitive(r, ["FEE", "fee"]),
+                selisih: selisih || (diskonValue > 0 ? String(diskonValue) : ""),
+                gambar: pickCaseInsensitive(r, ["gambar", "Gambar", "image", "Image", "img", "Img", "foto", "Foto"]),
+                highlight: pickCaseInsensitive(r, ["highlight", "Highlight", "unggulan", "Unggulan"]),
+                stok: pickCaseInsensitive(r, ["stok", "Stok", "stock", "Stock"]) || "10",
+                diskonValue: diskonValue,
+                diskonPersen: diskonPersen
+            };
+        }
+
+        /* ============================================================
+           HERO HANGTAGS
+           ============================================================ */
+        function renderHero(products) {
+            var el = document.getElementById("heroVisual");
+            var picks = products.slice(0, 3);
+            if (!picks.length) { el.innerHTML = ""; return; }
+            var pos = ["main", "left", "right"];
+            el.innerHTML = picks.map(function(item, i) {
+                var img = item.gambar || FALLBACK_IMG;
+                var priceDisplay = fmtPrice(item.harga_jual) || fmtPrice(item.harga_toko) || "Tanya harga";
+                return '<figure class="hangtag ' + pos[i] + '">' +
+                    '<span class="string"></span>' +
+                    '<div class="frame"><img src="' + esc(img) + '" alt="' + esc(item.nama) +
+                    '" onerror="imgFallback(this)" fetchpriority="high" decoding="async"></div>' +
+                    '<figcaption class="plate"><span class="eyelet"></span><span class="plate-txt">' +
+                    '<span class="t-name">' + esc(item.nama || "Produk") + '</span>' +
+                    '<span class="t-price">' + esc(priceDisplay) + '</span>' +
+                    '</span></figcaption></figure>';
+            }).join("");
+        }
+
+        /* ============================================================
+           BRAND STRIP
+           ============================================================ */
+        function renderBrandStrip(products) {
+            var seen = {},
+                brands = [];
+            products.forEach(function(p) {
+                var b = p.brand.trim();
+                if (b && !seen[b.toLowerCase()]) { seen[b.toLowerCase()] = 1;
+                    brands.push(b); }
+            });
+            if (brands.length < 4) return;
+            var one = brands.map(function(b) { return "<span>" + esc(b) + "</span>"; }).join("");
+            document.getElementById("brandTrack").innerHTML = one + one;
+            document.getElementById("brandStrip").hidden = false;
+        }
+
+        /* ============================================================
+           CARD — diskon persen di badge
+           ============================================================ */
+        function cardHTML(item, idx) {
+            var stock = parseInt(item.stok, 10) || 10;
+            var flag = "",
+                cta,
+                cls = "card";
+            if (stock === 0) {
+                flag = '<span class="flag out">Out of stock</span>';
+                cta = '<button class="card-cta" disabled>Out of stock</button>';
+                cls += " is-out";
+            } else if (stock <= 2) {
+                flag = '<span class="flag low">Left ' + stock + '</span>';
+                cta = '<button class="card-cta" data-order="' + idx + '">Order</button>';
+            } else {
+                cta = '<button class="card-cta" data-order="' + idx + '">Order</button>';
+            }
+
+            var diskonPersen = Math.round(item.diskonPersen || 0);
+            if (diskonPersen > 0) {
+                flag += '<span class="flag discount">Disc ' + diskonPersen + '%</span>';
+            }
+
+            var img = item.gambar || FALLBACK_IMG;
+            var priceOriginal = fmtPrice(item.harga_toko);
+            var priceSelling = fmtPrice(item.harga_jual) || priceOriginal || "Tanya harga";
+
+            return '<article class="' + cls + '" tabindex="0" data-idx="' + idx + '" ' +
+                'aria-label="View details for ' + esc(item.nama) + '">' +
+                '<div class="card-media">' + flag +
+                '<img data-src="' + esc(img) + '" src="' + PH + '" alt="' + esc(item.nama) + '" onerror="imgFallback(this)" loading="lazy" decoding="async">' +
+                '<span class="veil">View details</span></div>' +
+                '<div class="card-body">' +
+                '<span class="card-brand">' + esc(item.brand || "No brand") + '</span>' +
+                '<span class="card-name">' + esc(item.nama) + '</span>' +
+                '<div class="card-price-row">' +
+                (priceOriginal && priceOriginal !== priceSelling ? '<span class="card-price-original">' + esc(
+                    priceOriginal) + '</span>' : '') +
+                '<span class="card-price-selling">' + esc(priceSelling) + '</span>' +
+                '</div>' +
+                (item.ukuran ? '<span class="card-size">' + esc(item.ukuran) + '</span>' : '') +
+                cta + '</div></article>';
+        }
+
+        /* ============================================================
+           TABS
+           ============================================================ */
+        function renderTabs(categories) {
+            var row = document.getElementById("tabs");
+            var html = '<button class="tab is-active" role="tab" aria-selected="true" data-filter="all">All</button>';
+            categories.forEach(function(c) {
+                html += '<button class="tab" role="tab" aria-selected="false" data-filter="' + esc(c) + '">' + esc(
+                    titleCase(c)) + '</button>';
+            });
+            row.innerHTML = html;
+            var tabs = row.querySelectorAll(".tab");
+            tabs.forEach(function(t) {
+                t.addEventListener("click", function() {
+                    tabs.forEach(function(x) { x.classList.remove("is-active");
+                        x.setAttribute("aria-selected", "false"); });
+                    this.classList.add("is-active");
+                    this.setAttribute("aria-selected", "true");
+                    activeFilter = this.dataset.filter;
+                    renderBrandOptions();
+                    applyFilter();
+                });
+            });
+
+            var fc = document.getElementById("footCats");
+            fc.innerHTML = categories.slice(0, 5).map(function(c) {
+                return '<li><a href="#etalase" data-footcat="' + esc(c) + '">' + esc(titleCase(c)) + '</a></li>';
+            }).join("") || '<li><a href="#etalase">Semua barang</a></li>';
+            fc.querySelectorAll("[data-footcat]").forEach(function(a) {
+                a.addEventListener("click", function() {
+                    setFilters(this.dataset.footcat, "all", "");
+                });
+            });
+        }
+
+        /* ============================================================
+           BRAND OPTIONS
+           ============================================================ */
+        function renderBrandOptions() {
+            var sel = document.getElementById("brandSelect");
+            var seen = {},
+                brands = [];
+            etalaseProducts.forEach(function(p) {
+                if (activeFilter !== "all" && p.kategori.toLowerCase().trim() !== activeFilter) return;
+                var b = p.brand.trim();
+                if (!b) return;
+                var key = b.toLowerCase();
+                if (!seen[key]) { seen[key] = 1;
+                    brands.push(b); }
+            });
+            brands.sort(function(a, b) { return a.localeCompare(b, "id"); });
+
+            if (activeBrand !== "all" && brands.every(function(b) { return b.toLowerCase() !== activeBrand; })) {
+                activeBrand = "all";
+            }
+
+            sel.innerHTML = '<option value="all">All Brands</option>' +
+                brands.map(function(b) {
+                    return '<option value="' + esc(b.toLowerCase()) + '">' + esc(b) + '</option>';
+                }).join("");
+            sel.value = activeBrand;
+            sel.parentNode.classList.toggle("is-on", activeBrand !== "all");
+            sel.disabled = brands.length === 0;
+        }
+
+        /* ============================================================
+           RENDER PRODUCTS
+           ============================================================ */
+        function renderProducts(products) {
+            var container = document.getElementById("etalaseContainer");
+            var order = [],
+                grouped = {};
+            products.forEach(function(p, i) {
+                var cat = (p.kategori || "lainnya").toLowerCase().trim();
+                if (!grouped[cat]) { grouped[cat] = [];
+                    order.push(cat); }
+                grouped[cat].push(i);
+            });
+
+            container.innerHTML = order.map(function(cat) {
+                var cards = grouped[cat].map(function(i) { return cardHTML(products[i], i); }).join("");
+                return '<section class="cat-block" data-category="' + esc(cat) + '">' +
+                    '<div class="cat-head"><h3>' + esc(titleCase(cat)) + '</h3><span class="rule"></span>' +
+                    '<span class="count">' + grouped[cat].length + ' items</span></div>' +
+                    '<div class="grid">' + cards + '</div></section>';
+            }).join("");
+
+            container.querySelectorAll(".card").forEach(function(card) {
+                card.addEventListener("click", function(e) {
+                    if (e.target.closest("[data-order]")) return;
+                    openQuickView(parseInt(this.dataset.idx, 10));
+                });
+                card.addEventListener("keydown", function(e) {
+                    if (e.key === "Enter" || e.key === " ") { e.preventDefault();
+                        openQuickView(parseInt(this.dataset.idx, 10)); }
+                });
+            });
+            container.querySelectorAll("[data-order]").forEach(function(btn) {
+                btn.addEventListener("click", function(e) {
+                    e.stopPropagation();
+                    orderWA(etalaseProducts[parseInt(this.dataset.order, 10)]);
+                });
+            });
+
+            observeLazy(container);
+        }
+
+        /* ============================================================
+           FILTER + SEARCH
+           ============================================================ */
+        function applyFilter() {
+            var q = searchQuery.toLowerCase().trim();
+            var totalVisible = 0;
+
+            document.querySelectorAll("#etalaseContainer .cat-block").forEach(function(block) {
+                var catMatch = (activeFilter === "all" || block.dataset.category === activeFilter);
+                var shown = 0;
+                block.querySelectorAll(".card").forEach(function(card) {
+                    var p = etalaseProducts[parseInt(card.dataset.idx, 10)];
+                    var hay = (p.nama + " " + p.brand + " " + p.kategori + " " + p.ukuran).toLowerCase();
+                    var brandMatch = (activeBrand === "all" || p.brand.toLowerCase().trim() === activeBrand);
+                    var ok = catMatch && brandMatch && (!q || hay.indexOf(q) !== -1);
+                    card.style.display = ok ? "" : "none";
+                    if (ok) shown++;
+                });
+                block.style.display = shown ? "" : "none";
+                var count = block.querySelector(".count");
+                if (count) count.textContent = shown + " items";
+                totalVisible += shown;
+            });
+
+            document.getElementById("noResult").style.display = totalVisible ? "none" : "";
+        }
+
+        document.getElementById("searchInput").addEventListener("input", function() {
+            searchQuery = this.value;
+            applyFilter();
+        });
+
+        document.getElementById("brandSelect").addEventListener("change", function() {
+            activeBrand = this.value;
+            this.parentNode.classList.toggle("is-on", activeBrand !== "all");
+            applyFilter();
+        });
+
+        document.getElementById("resetFilters").addEventListener("click", function() {
+            setFilters("all", "all", "");
+            scrollToEtalase();
+        });
+
+        function scrollToEtalase() {
+            var el = document.getElementById("etalase");
+            if (el && el.scrollIntoView) el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+        }
+
+        function setFilters(cat, brand, query) {
+            activeFilter = cat;
+            activeBrand = brand;
+            searchQuery = query;
+            document.getElementById("searchInput").value = query;
+            document.querySelectorAll(".tab").forEach(function(t) {
+                var on = t.dataset.filter === cat;
+                t.classList.toggle("is-active", on);
+                t.setAttribute("aria-selected", on ? "true" : "false");
+            });
+            renderBrandOptions();
+            applyFilter();
+        }
+
+        /* ============================================================
+           QUICK VIEW — diskon hanya persentase, tanpa nominal
+           ============================================================ */
+        var qv = document.getElementById("quickView");
+
+        function openQuickView(idx) {
+            var item = etalaseProducts[idx];
+            if (!item) return;
+            qvLastFocused = document.querySelector('.card[data-idx="' + idx + '"]');
+
+            var stock = parseInt(item.stok, 10) || 10;
+            var img = item.gambar ? biggerImg(item.gambar) : FALLBACK_IMG;
+
+            var imgEl = document.getElementById("qvImg");
+            imgEl.src = img;
+            imgEl.alt = item.nama;
+            imgEl.onerror = function() { imgFallback(this); };
+
+            var brandBtn = document.getElementById("qvBrand");
+            brandBtn.textContent = item.brand ? item.brand + " — lihat semua" : "No brand";
+            brandBtn.disabled = !item.brand;
+            brandBtn.onclick = item.brand ? function() {
+                closeQuickView();
+                setFilters("all", item.brand.toLowerCase().trim(), "");
+                scrollToEtalase();
+            } : null;
+
+            document.getElementById("qvName").textContent = item.nama;
+
+            var priceOriginal = fmtPrice(item.harga_toko);
+            var priceSelling = fmtPrice(item.harga_jual) || priceOriginal || "Tanya harga";
+            document.getElementById("qvPriceOriginal").textContent = priceOriginal && priceOriginal !== priceSelling ?
+                priceOriginal : "";
+            document.getElementById("qvPriceSelling").textContent = priceSelling;
+            document.getElementById("qvCat").textContent = titleCase(item.kategori);
+
+            var sizeRow = document.getElementById("qvSizeRow");
+            sizeRow.style.display = item.ukuran ? "" : "none";
+            document.getElementById("qvSize").textContent = item.ukuran;
+
+            // Diskon: hanya persentase, tanpa nominal
+            var diskonPersen = Math.round(item.diskonPersen || 0);
+            var discRow = document.getElementById("qvDiscountRow");
+            if (diskonPersen > 0) {
+                discRow.style.display = "";
+                document.getElementById("qvDiscount").textContent = diskonPersen + "%";
+            } else {
+                discRow.style.display = "none";
+            }
+
+            var stockEl = document.getElementById("qvStock");
+            var buy = document.getElementById("qvBuy");
+            if (stock === 0) {
+                stockEl.textContent = "Out of stock";
+                stockEl.className = "qv-stock out";
+                buy.disabled = true;
+                buy.className = "btn btn--line";
+                buy.innerHTML = "Out of stock";
+            } else if (stock <= 2) {
+                stockEl.textContent = "Left " + stock + " items";
+                stockEl.className = "qv-stock low";
+                buy.disabled = false;
+                buy.className = "btn btn--solid";
+                buy.innerHTML =
+                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z"/></svg> Pesan lewat WhatsApp';
+            } else {
+                stockEl.textContent = "Ready, " + stock + " available";
+                stockEl.className = "qv-stock";
+                buy.disabled = false;
+                buy.className = "btn btn--solid";
+                buy.innerHTML =
+                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z"/></svg> Pesan lewat WhatsApp';
+            }
+            buy.onclick = stock === 0 ? null : function() { orderWA(item); };
+
+            qv.classList.add("is-open");
+            document.body.style.overflow = "hidden";
+            document.getElementById("qvClose").focus();
+        }
+
+        function closeQuickView() {
+            qv.classList.remove("is-open");
+            document.body.style.overflow = "";
+            if (qvLastFocused) qvLastFocused.focus();
+        }
+        document.getElementById("qvClose").addEventListener("click", closeQuickView);
+        qv.addEventListener("click", function(e) { if (e.target === this) closeQuickView(); });
+
+        /* ============================================================
+           TESTIMONI
+           ============================================================ */
+        function renderTestimoni(raw) {
+            if (!raw || !raw.length) return;
+            testiSlides = raw.map(function(r) {
+                return {
+                    nama: pickCaseInsensitive(r, ["nama", "Nama", "name", "Name"]),
+                    teks: pickCaseInsensitive(r, ["teks", "Teks", "text", "Text", "testimoni"]),
+                    rating: pickCaseInsensitive(r, ["rating", "Rating"]) || "5"
+                };
+            }).filter(function(s) { return s.teks; });
+            if (!testiSlides.length) return;
+
+            var section = document.getElementById("testimoni");
+            document.getElementById("testiTrack").innerHTML = testiSlides.map(function(s) {
+                return '<div class="testi-slide"><div class="stars">' + starsHTML(s.rating) + '</div>' +
+                    '<p class="testi-text">' + esc(s.teks) + '</p>' +
+                    '<span class="testi-name">' + esc(s.nama || "Pelanggan") + '</span></div>';
+            }).join("");
+
+            if (testiSlides.length < 2) {
+                document.querySelector(".testi-nav").style.display = "none";
+                section.style.display = "";
+                return;
+            }
+
+            document.getElementById("testiDots").innerHTML = testiSlides.map(function(_, i) {
+                return '<button class="dot' + (i === 0 ? " is-active" : "") + '" data-i="' + i +
+                    '" aria-label="Testimoni ' + (i + 1) + '"></button>';
+            }).join("");
+            document.querySelectorAll("#testiDots .dot").forEach(function(d) {
+                d.addEventListener("click", function() { goToTesti(parseInt(this.dataset.i, 10)); });
+            });
+            document.getElementById("testiPrev").addEventListener("click", function() {
+                goToTesti(testiCurrent <= 0 ? testiSlides.length - 1 : testiCurrent - 1);
+            });
+            document.getElementById("testiNext").addEventListener("click", function() {
+                goToTesti(testiCurrent >= testiSlides.length - 1 ? 0 : testiCurrent + 1);
+            });
+
+            var vp = document.getElementById("testiViewport");
+            vp.addEventListener("touchstart", function(e) { testiTouchX = e.touches[0].clientX;
+                stopTestiAuto(); }, { passive: true });
+            vp.addEventListener("touchend", function(e) {
+                var dx = e.changedTouches[0].clientX - testiTouchX;
+                if (Math.abs(dx) > 50) goToTesti(dx < 0 ?
+                    (testiCurrent >= testiSlides.length - 1 ? 0 : testiCurrent + 1) :
+                    (testiCurrent <= 0 ? testiSlides.length - 1 : testiCurrent - 1));
+                startTestiAuto();
+            }, { passive: true });
+
+            var stage = document.getElementById("testiStage");
+            stage.addEventListener("mouseenter", stopTestiAuto);
+            stage.addEventListener("mouseleave", startTestiAuto);
+
+            section.style.display = "";
+            startTestiAuto();
+        }
+
+        function goToTesti(i) {
+            testiCurrent = i;
+            document.getElementById("testiTrack").style.transform = "translateX(-" + (i * 100) + "%)";
+            document.querySelectorAll("#testiDots .dot").forEach(function(d, j) {
+                d.classList.toggle("is-active", j === i);
+            });
+        }
+
+        function startTestiAuto() {
+            if (reduceMotion) return;
+            stopTestiAuto();
+            testiTimer = setInterval(function() {
+                goToTesti(testiCurrent >= testiSlides.length - 1 ? 0 : testiCurrent + 1);
+            }, 5200);
+        }
+
+        function stopTestiAuto() { if (testiTimer) { clearInterval(testiTimer);
+                testiTimer = null; } }
+
+        /* ============================================================
+           PROCESS + LOAD
+           ============================================================ */
+        function processAndRender(json) {
+            var raw = Array.isArray(json) ? json : (json.data || json.result || []);
+            var testiRaw = (json && json.testimoni) || [];
+
+            allProducts = raw.map(normalizeRow).filter(function(p) { return p.nama; });
+
+            var highlights = allProducts.filter(function(p) { return isYes(p.highlight); });
+            etalaseProducts = allProducts.slice();
+
+            renderHero(highlights.length ? highlights : allProducts);
+            renderBrandStrip(allProducts);
+
+            var seen = {},
+                categories = [];
+            etalaseProducts.forEach(function(p) {
+                var c = p.kategori.toLowerCase().trim();
+                if (!seen[c]) { seen[c] = 1;
+                    categories.push(c); }
+            });
+
+            hideSkeleton();
+            renderTabs(categories);
+            renderProducts(etalaseProducts);
+            activeFilter = "all";
+            activeBrand = "all";
+            searchQuery = "";
+            renderBrandOptions();
+            applyFilter();
+            renderTestimoni(testiRaw);
+        }
+
+        async function loadEtalase() {
+            var cached = getCached();
+            if (cached) { try { processAndRender(cached); return; } catch (e) {} }
+
+            showSkeleton();
+            document.getElementById("etalaseError").style.display = "none";
+            document.getElementById("etalaseContainer").innerHTML = "";
+
+            try {
+                var json = await robustFetch(SHEET_API_URL, 2, 1500);
+                if (json && json.error) throw new Error(json.error);
+                setCache(json);
+                processAndRender(json);
+            } catch (err) {
+    console.error("Load etalase error:", err);   // Lihat error asli di konsol
+
+    hideSkeleton();
+
+    // Sembunyikan hero visual
+    const hero = document.getElementById("heroVisual");
+    if (hero) hero.style.display = "none";
+
+    // Tampilkan div error
+    const errorDiv = document.getElementById("etalaseError");
+    if (errorDiv) errorDiv.style.display = "";
+
+    // Isi pesan error
+    const errorMsg = document.getElementById("etalaseErrorMsg");
+    if (errorMsg) {
+        errorMsg.textContent = "Gagal memuat data (" + err.message + "). Periksa koneksi, lalu muat ulang.";
+    }
+}
+        }
+
+        loadEtalase();
+    </script>
+</body>
+</html>
