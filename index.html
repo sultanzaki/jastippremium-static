@@ -2455,9 +2455,6 @@
             if (diskonPersen > 0) {
                 flag += '<span class="flag discount">Disc ' + diskonPersen + '%</span>';
             }
-            if (item.galeri && item.galeri.length > 1) {
-                flag += '<span class="flag foto">' + item.galeri.length + ' foto</span>';
-            }
 
             var img = item.gambar || FALLBACK_IMG;
             var priceOriginal = fmtPrice(item.harga_toko);
