@@ -1273,12 +1273,88 @@
         }
         .qv-media {
             background: var(--tint);
+            display: flex;
+            flex-direction: column;
         }
-        .qv-media img {
+        .qv-stage {
+            position: relative;
+            flex: 1;
+            overflow: hidden;
+        }
+        .qv-media img#qvImg {
             width: 100%;
             height: 100%;
             object-fit: cover;
             aspect-ratio: 4/5;
+        }
+        .qv-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, .88);
+            color: var(--ink);
+            font-size: 1.15rem;
+            line-height: 1;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 2px 10px rgba(30, 28, 27, .18);
+            transition: background .2s, opacity .2s;
+        }
+        .qv-nav:hover { background: #fff; }
+        .qv-nav.prev { left: 10px; }
+        .qv-nav.next { right: 10px; }
+        .qv-nav[hidden] { display: none; }
+        .qv-count {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            background: rgba(30, 28, 27, .72);
+            color: #fff;
+            font-family: var(--f-mono);
+            font-size: .64rem;
+            letter-spacing: .1em;
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+        .qv-count[hidden] { display: none; }
+        .qv-thumbs {
+            display: flex;
+            gap: 6px;
+            padding: 8px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+        .qv-thumbs[hidden] { display: none; }
+        .qv-thumbs button {
+            flex: 0 0 52px;
+            height: 64px;
+            padding: 0;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--tint);
+            opacity: .62;
+            transition: opacity .2s, border-color .2s;
+        }
+        .qv-thumbs button img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .qv-thumbs button.is-active,
+        .qv-thumbs button:hover {
+            opacity: 1;
+            border-color: var(--ink);
+        }
+        .flag.foto {
+            background: rgba(30, 28, 27, .72);
+            color: #fff;
         }
         .qv-body {
             padding: clamp(24px, 3.4vw, 44px);
@@ -1928,7 +2004,15 @@
             <button class="qv-close" id="qvClose" aria-label="Tutup detail barang">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
             </button>
-            <div class="qv-media"><img id="qvImg" src="" alt=""></div>
+            <div class="qv-media">
+                <div class="qv-stage">
+                    <img id="qvImg" src="" alt="">
+                    <button class="qv-nav prev" id="qvPrev" type="button" aria-label="Foto sebelumnya">&#8249;</button>
+                    <button class="qv-nav next" id="qvNext" type="button" aria-label="Foto berikutnya">&#8250;</button>
+                    <span class="qv-count" id="qvCount"></span>
+                </div>
+                <div class="qv-thumbs" id="qvThumbs"></div>
+            </div>
             <div class="qv-body">
                 <button class="qv-brand" id="qvBrand" type="button"></button>
                 <h3 class="qv-name" id="qvName"></h3>
@@ -1958,7 +2042,7 @@
         /* ============================================================
            KONFIGURASI
            ============================================================ */
-        var SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxPPIP-0Pmcn6QsgfvPF_gUVr980tGTgT6l6gDIYSq0DPeWCnFlUcqmO6zAmQwq_017/exec";
+        var SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzUM4wtt93EW7nuz9NyEW5ZsPNXVhUFxnULvgco2YlHlTXf12W_FwmKvmihEkXEseeu/exec";
         var WA_NUMBER = "6285121804117";
 
         var CACHE_KEY = "jastippremium_v2";
@@ -2015,7 +2099,11 @@
             return h;
         }
 
-        function biggerImg(src) { return String(src || "").replace(/w=\d+/, "w=900").replace(/q=\d+/, "q=85"); }
+        function biggerImg(src) {
+            var s = String(src || "");
+            if (/googleusercontent\.com\/d\//.test(s)) return s.replace(/=w\d+.*$/, "=w1200");
+            return s.replace(/w=\d+/, "w=900").replace(/q=\d+/, "q=85");
+        }
 
         function waLink(text) { return "https://wa.me/" + WA_NUMBER + (text ? "?text=" + encodeURIComponent(text) : ""); }
 
@@ -2201,11 +2289,84 @@
             return "";
         }
 
+        /* ============================================================
+           GAMBAR — satu produk bisa punya banyak foto
+           ============================================================ */
+
+        /** Tautan Drive diubah jadi alamat yang bisa dipasang di <img>. */
+        function rapikanUrlFoto(url) {
+            var u = String(url || "").trim();
+            if (!u) return "";
+            var m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]{20,})/);
+            if (m) return "https://lh3.googleusercontent.com/d/" + m[1] + "=w1200";
+            if (/^https?:\/\//i.test(u)) return u;
+            return "";
+        }
+
+        /** Apakah sebuah URL layak dianggap gambar? */
+        function tampakGambar(u) {
+            if (!/^https?:\/\//i.test(u)) return false;
+            if (/\.(jpe?g|png|webp|gif|avif|bmp)(\?|#|$)/i.test(u)) return true;
+            return /googleusercontent\.com|drive\.google\.com|cloudinary|imgur|unsplash|imagekit|\/cdn\//i.test(u);
+        }
+
+        /**
+         * Mengumpulkan foto dari mana pun tersedia, berurutan:
+         *   1. kolom IMAGES (banyak URL, dipisah "|", baris baru, atau koma)
+         *   2. kolom gambar/image/foto lama
+         *   3. kolom LINK — dipakai hanya kalau isinya memang alamat gambar
+         * Mengembalikan { galeri: [...], link: "" } — link produk dipisahkan
+         * supaya tidak ikut dipasang sebagai foto.
+         */
+        function kumpulkanFoto(r) {
+            var daftar = [];
+
+            // Endpoint baru bisa mengirim array langsung.
+            for (var key in r) {
+                if (r.hasOwnProperty(key) && Array.isArray(r[key]) &&
+                    /^(foto|fotos|images|gambar|photos)$/i.test(key.trim())) {
+                    daftar = r[key].slice();
+                    break;
+                }
+            }
+
+            if (!daftar.length) {
+                var mentah = pickCaseInsensitive(r, ["IMAGES", "images", "GAMBAR", "gambar",
+                    "image", "img", "foto", "photos", "gambar2", "images2"]);
+                if (mentah) daftar = String(mentah).split(/\s*\|\s*|\r?\n|\s*;\s*|\s*,\s*(?=https?:\/\/)/);
+            }
+
+            var link = pickCaseInsensitive(r, ["LINK", "link", "url", "URL", "tautan"]);
+            var linkFoto = "";
+
+            // Kolom LINK di sheet lama berisi alamat gambar, bukan halaman produk.
+            if (link) {
+                var potongan = String(link).split(/\s*\|\s*|\r?\n|\s*,\s*(?=https?:\/\/)/);
+                var semuaGambar = potongan.filter(function(x) { return tampakGambar(rapikanUrlFoto(x)); });
+                if (semuaGambar.length) {
+                    if (!daftar.length) daftar = potongan;   // hanya LINK yang punya foto
+                    linkFoto = "gambar";
+                }
+            }
+
+            var bersih = [];
+            daftar.forEach(function(u) {
+                var rapi = rapikanUrlFoto(u);
+                if (rapi && bersih.indexOf(rapi) === -1) bersih.push(rapi);
+            });
+
+            return {
+                galeri: bersih,
+                link: linkFoto === "gambar" ? "" : String(link || "").trim()
+            };
+        }
+
         function normalizeRow(r) {
-            var hargaToko = pickCaseInsensitive(r, ["ORI STORE PRICE", "HARGA TOKO", "harga_toko"]);
-            var hargaJual = pickCaseInsensitive(r, ["SELLING PRICE", "HARGA JUAL", "harga_jual"]);
+            var hargaToko = pickCaseInsensitive(r, ["ORI STORE PRICE", "HARGA TOKO", "harga_toko", "ori"]);
+            var hargaJual = pickCaseInsensitive(r, ["SELLING PRICE", "HARGA JUAL", "harga_jual", "jual"]);
             var hargaDiskon = pickCaseInsensitive(r, ["DISCOUNTED STORE PRICE", "DISKON", "diskon"]);
             var selisih = pickCaseInsensitive(r, ["SELISIH", "selisih"]);
+            var foto = kumpulkanFoto(r);
 
             var tokoNum = parseFloat(hargaToko.replace(/[^\d.]/g, "")) || 0;
             var jualNum = parseFloat(hargaJual.replace(/[^\d.]/g, "")) || 0;
@@ -2213,16 +2374,18 @@
             var diskonPersen = (tokoNum > 0) ? (diskonValue / tokoNum) * 100 : 0;
 
             return {
-                nama: pickCaseInsensitive(r, ["PRODUCT", "product", "nama", "Nama"]),
+                nama: pickCaseInsensitive(r, ["PRODUCT", "product", "nama", "Nama", "produk"]),
                 brand: pickCaseInsensitive(r, ["BRAND", "brand", "Brand"]),
                 kategori: pickCaseInsensitive(r, ["CATEGORY", "category", "kategori", "Kategori"]) || "lainnya",
-                ukuran: pickCaseInsensitive(r, ["VARIANT", "variant", "ukuran", "Ukuran"]),
+                ukuran: pickCaseInsensitive(r, ["VARIANT", "variant", "ukuran", "Ukuran", "varian"]),
                 harga_toko: hargaToko,
                 harga_jual: hargaJual || hargaToko,
                 diskon: hargaDiskon || (diskonValue > 0 ? String(diskonValue) : ""),
                 fee: pickCaseInsensitive(r, ["FEE", "fee"]),
                 selisih: selisih || (diskonValue > 0 ? String(diskonValue) : ""),
-                gambar: pickCaseInsensitive(r, ["gambar", "Gambar", "image", "Image", "img", "Img", "foto", "Foto"]),
+                gambar: foto.galeri[0] || "",
+                galeri: foto.galeri,
+                link: foto.link,
                 highlight: pickCaseInsensitive(r, ["highlight", "Highlight", "unggulan", "Unggulan"]),
                 stok: pickCaseInsensitive(r, ["stok", "Stok", "stock", "Stock"]) || "10",
                 diskonValue: diskonValue,
@@ -2291,6 +2454,9 @@
             var diskonPersen = Math.round(item.diskonPersen || 0);
             if (diskonPersen > 0) {
                 flag += '<span class="flag discount">Disc ' + diskonPersen + '%</span>';
+            }
+            if (item.galeri && item.galeri.length > 1) {
+                flag += '<span class="flag foto">' + item.galeri.length + ' foto</span>';
             }
 
             var img = item.gambar || FALLBACK_IMG;
@@ -2488,18 +2654,94 @@
            ============================================================ */
         var qv = document.getElementById("quickView");
 
+        /* ---- Galeri quick view ---- */
+        var qvGaleri = [],
+            qvIndeks = 0;
+
+        function qvPasangGaleri(item) {
+            qvGaleri = (item.galeri && item.galeri.length) ? item.galeri.slice() : [];
+            qvIndeks = 0;
+
+            var stage = document.getElementById("qvImg");
+            var thumbs = document.getElementById("qvThumbs");
+            var prev = document.getElementById("qvPrev");
+            var next = document.getElementById("qvNext");
+            var hitung = document.getElementById("qvCount");
+
+            stage.alt = item.nama || "";
+            stage.onerror = function() { imgFallback(this); };
+
+            var banyak = qvGaleri.length > 1;
+            prev.hidden = !banyak;
+            next.hidden = !banyak;
+            hitung.hidden = !banyak;
+            thumbs.hidden = !banyak;
+
+            if (!qvGaleri.length) {
+                stage.src = FALLBACK_IMG;
+                thumbs.innerHTML = "";
+                return;
+            }
+
+            thumbs.innerHTML = qvGaleri.map(function(url, i) {
+                return '<button type="button" data-foto="' + i + '" aria-label="Foto ' + (i + 1) + '">' +
+                    '<img src="' + esc(url) + '" alt="" loading="lazy" onerror="imgFallback(this)"></button>';
+            }).join("");
+
+            qvKeFoto(0);
+        }
+
+        function qvKeFoto(i) {
+            if (!qvGaleri.length) return;
+            qvIndeks = (i + qvGaleri.length) % qvGaleri.length;
+            var stage = document.getElementById("qvImg");
+            stage.src = biggerImg(qvGaleri[qvIndeks]);
+            document.getElementById("qvCount").textContent = (qvIndeks + 1) + " / " + qvGaleri.length;
+            var tombol = document.getElementById("qvThumbs").querySelectorAll("button");
+            for (var t = 0; t < tombol.length; t++) {
+                tombol[t].className = (t === qvIndeks) ? "is-active" : "";
+            }
+        }
+
+        document.getElementById("qvPrev").addEventListener("click", function(e) {
+            e.stopPropagation();
+            qvKeFoto(qvIndeks - 1);
+        });
+        document.getElementById("qvNext").addEventListener("click", function(e) {
+            e.stopPropagation();
+            qvKeFoto(qvIndeks + 1);
+        });
+        document.getElementById("qvThumbs").addEventListener("click", function(e) {
+            var b = e.target.closest("button[data-foto]");
+            if (b) qvKeFoto(parseInt(b.dataset.foto, 10));
+        });
+        document.addEventListener("keydown", function(e) {
+            if (!qv.classList.contains("is-open") || qvGaleri.length < 2) return;
+            if (e.key === "ArrowLeft") qvKeFoto(qvIndeks - 1);
+            if (e.key === "ArrowRight") qvKeFoto(qvIndeks + 1);
+        });
+
+        /* Geser dengan jari di layar sentuh */
+        (function() {
+            var stage = document.querySelector(".qv-stage");
+            if (!stage) return;
+            var x0 = null;
+            stage.addEventListener("touchstart", function(e) { x0 = e.touches[0].clientX; }, { passive: true });
+            stage.addEventListener("touchend", function(e) {
+                if (x0 === null || qvGaleri.length < 2) return;
+                var beda = e.changedTouches[0].clientX - x0;
+                if (Math.abs(beda) > 42) qvKeFoto(qvIndeks + (beda < 0 ? 1 : -1));
+                x0 = null;
+            }, { passive: true });
+        })();
+
         function openQuickView(idx) {
             var item = etalaseProducts[idx];
             if (!item) return;
             qvLastFocused = document.querySelector('.card[data-idx="' + idx + '"]');
 
             var stock = parseInt(item.stok, 10) || 10;
-            var img = item.gambar ? biggerImg(item.gambar) : FALLBACK_IMG;
-
-            var imgEl = document.getElementById("qvImg");
-            imgEl.src = img;
-            imgEl.alt = item.nama;
-            imgEl.onerror = function() { imgFallback(this); };
+            qvPasangGaleri(item);
 
             var brandBtn = document.getElementById("qvBrand");
             brandBtn.textContent = item.brand ? item.brand + " — lihat semua" : "No brand";
@@ -2654,7 +2896,7 @@
            PROCESS + LOAD
            ============================================================ */
         function processAndRender(json) {
-            var raw = Array.isArray(json) ? json : (json.data || json.result || []);
+            var raw = Array.isArray(json) ? json : (json.data || json.result || json.produk || json.products || []);
             var testiRaw = (json && json.testimoni) || [];
 
             allProducts = raw.map(normalizeRow).filter(function(p) { return p.nama; });
