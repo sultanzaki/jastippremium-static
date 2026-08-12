@@ -1305,10 +1305,18 @@
             box-shadow: 0 2px 10px rgba(30, 28, 27, .18);
             transition: background .2s, opacity .2s;
         }
-        .qv-nav:hover { background: #fff; }
-        .qv-nav.prev { left: 10px; }
-        .qv-nav.next { right: 10px; }
-        .qv-nav[hidden] { display: none; }
+        .qv-nav:hover {
+            background: #fff;
+        }
+        .qv-nav.prev {
+            left: 10px;
+        }
+        .qv-nav.next {
+            right: 10px;
+        }
+        .qv-nav[hidden] {
+            display: none;
+        }
         .qv-count {
             position: absolute;
             right: 10px;
@@ -1321,7 +1329,9 @@
             padding: 3px 8px;
             border-radius: 999px;
         }
-        .qv-count[hidden] { display: none; }
+        .qv-count[hidden] {
+            display: none;
+        }
         .qv-thumbs {
             display: flex;
             gap: 6px;
@@ -1329,7 +1339,9 @@
             overflow-x: auto;
             scrollbar-width: thin;
         }
-        .qv-thumbs[hidden] { display: none; }
+        .qv-thumbs[hidden] {
+            display: none;
+        }
         .qv-thumbs button {
             flex: 0 0 52px;
             height: 64px;
@@ -1782,7 +1794,7 @@
                     <a href="#etalase" class="btn btn--solid">Lihat etalase</a>
                     <a class="btn btn--line" data-wa href="#">Titip barang dari JPO</a>
                 </div>
-                            </div>
+            </div>
             <div class="hero-visual" id="heroVisual"></div>
         </div>
     </section>
@@ -2271,7 +2283,7 @@
         function hideSkeleton() { document.getElementById("etalaseLoading").style.display = "none"; }
 
         /* ============================================================
-           NORMALIZE — diskon persen
+           NORMALIZE — diskon dihitung dari ori store price dan discounted store price
            ============================================================ */
         function pickCaseInsensitive(obj, keys) {
             var lowerKeys = keys.map(function(k) { return k.toLowerCase().trim(); });
@@ -2289,11 +2301,6 @@
             return "";
         }
 
-        /* ============================================================
-           GAMBAR — satu produk bisa punya banyak foto
-           ============================================================ */
-
-        /** Tautan Drive diubah jadi alamat yang bisa dipasang di <img>. */
         function rapikanUrlFoto(url) {
             var u = String(url || "").trim();
             if (!u) return "";
@@ -2303,25 +2310,14 @@
             return "";
         }
 
-        /** Apakah sebuah URL layak dianggap gambar? */
         function tampakGambar(u) {
             if (!/^https?:\/\//i.test(u)) return false;
             if (/\.(jpe?g|png|webp|gif|avif|bmp)(\?|#|$)/i.test(u)) return true;
             return /googleusercontent\.com|drive\.google\.com|cloudinary|imgur|unsplash|imagekit|\/cdn\//i.test(u);
         }
 
-        /**
-         * Mengumpulkan foto dari mana pun tersedia, berurutan:
-         *   1. kolom IMAGES (banyak URL, dipisah "|", baris baru, atau koma)
-         *   2. kolom gambar/image/foto lama
-         *   3. kolom LINK — dipakai hanya kalau isinya memang alamat gambar
-         * Mengembalikan { galeri: [...], link: "" } — link produk dipisahkan
-         * supaya tidak ikut dipasang sebagai foto.
-         */
         function kumpulkanFoto(r) {
             var daftar = [];
-
-            // Endpoint baru bisa mengirim array langsung.
             for (var key in r) {
                 if (r.hasOwnProperty(key) && Array.isArray(r[key]) &&
                     /^(foto|fotos|images|gambar|photos)$/i.test(key.trim())) {
@@ -2329,32 +2325,27 @@
                     break;
                 }
             }
-
             if (!daftar.length) {
                 var mentah = pickCaseInsensitive(r, ["IMAGES", "images", "GAMBAR", "gambar",
-                    "image", "img", "foto", "photos", "gambar2", "images2"]);
+                    "image", "img", "foto", "photos", "gambar2", "images2"
+                ]);
                 if (mentah) daftar = String(mentah).split(/\s*\|\s*|\r?\n|\s*;\s*|\s*,\s*(?=https?:\/\/)/);
             }
-
             var link = pickCaseInsensitive(r, ["LINK", "link", "url", "URL", "tautan"]);
             var linkFoto = "";
-
-            // Kolom LINK di sheet lama berisi alamat gambar, bukan halaman produk.
             if (link) {
                 var potongan = String(link).split(/\s*\|\s*|\r?\n|\s*,\s*(?=https?:\/\/)/);
                 var semuaGambar = potongan.filter(function(x) { return tampakGambar(rapikanUrlFoto(x)); });
                 if (semuaGambar.length) {
-                    if (!daftar.length) daftar = potongan;   // hanya LINK yang punya foto
+                    if (!daftar.length) daftar = potongan;
                     linkFoto = "gambar";
                 }
             }
-
             var bersih = [];
             daftar.forEach(function(u) {
                 var rapi = rapikanUrlFoto(u);
                 if (rapi && bersih.indexOf(rapi) === -1) bersih.push(rapi);
             });
-
             return {
                 galeri: bersih,
                 link: linkFoto === "gambar" ? "" : String(link || "").trim()
@@ -2369,8 +2360,11 @@
             var foto = kumpulkanFoto(r);
 
             var tokoNum = parseFloat(hargaToko.replace(/[^\d.]/g, "")) || 0;
+            var diskonNum = parseFloat(hargaDiskon.replace(/[^\d.]/g, "")) || 0;
             var jualNum = parseFloat(hargaJual.replace(/[^\d.]/g, "")) || 0;
-            var diskonValue = Math.max(0, tokoNum - jualNum);
+
+            // Diskon dihitung dari ori store price vs discounted store price
+            var diskonValue = Math.max(0, tokoNum - diskonNum);
             var diskonPersen = (tokoNum > 0) ? (diskonValue / tokoNum) * 100 : 0;
 
             return {
@@ -2451,6 +2445,7 @@
                 cta = '<button class="card-cta" data-order="' + idx + '">Order</button>';
             }
 
+            // Diskon dari ori store price vs discounted store price
             var diskonPersen = Math.round(item.diskonPersen || 0);
             if (diskonPersen > 0) {
                 flag += '<span class="flag discount">Disc ' + diskonPersen + '%</span>';
@@ -2762,7 +2757,7 @@
             sizeRow.style.display = item.ukuran ? "" : "none";
             document.getElementById("qvSize").textContent = item.ukuran;
 
-            // Diskon: hanya persentase, tanpa nominal
+            // Diskon: hanya persentase, tanpa nominal — dihitung dari ori store price vs discounted store price
             var diskonPersen = Math.round(item.diskonPersen || 0);
             var discRow = document.getElementById("qvDiscountRow");
             if (diskonPersen > 0) {
@@ -2937,24 +2932,17 @@
                 setCache(json);
                 processAndRender(json);
             } catch (err) {
-    console.error("Load etalase error:", err);   // Lihat error asli di konsol
-
-    hideSkeleton();
-
-    // Sembunyikan hero visual
-    const hero = document.getElementById("heroVisual");
-    if (hero) hero.style.display = "none";
-
-    // Tampilkan div error
-    const errorDiv = document.getElementById("etalaseError");
-    if (errorDiv) errorDiv.style.display = "";
-
-    // Isi pesan error
-    const errorMsg = document.getElementById("etalaseErrorMsg");
-    if (errorMsg) {
-        errorMsg.textContent = "Gagal memuat data (" + err.message + "). Periksa koneksi, lalu muat ulang.";
-    }
-}
+                console.error("Load etalase error:", err);
+                hideSkeleton();
+                var hero = document.getElementById("heroVisual");
+                if (hero) hero.style.display = "none";
+                var errorDiv = document.getElementById("etalaseError");
+                if (errorDiv) errorDiv.style.display = "";
+                var errorMsg = document.getElementById("etalaseErrorMsg");
+                if (errorMsg) {
+                    errorMsg.textContent = "Gagal memuat data (" + err.message + "). Periksa koneksi, lalu muat ulang.";
+                }
+            }
         }
 
         loadEtalase();
