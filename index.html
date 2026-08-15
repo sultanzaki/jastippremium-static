@@ -11,8 +11,21 @@
     <meta property="og:type" content="website" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231E1C1B'/%3E%3Ctext x='16' y='23' font-family='Georgia,serif' font-size='15' fill='%23F3F1EE' text-anchor='middle'%3EJP%3C/text%3E%3C/svg%3E" />
 
+    <link rel="preconnect" href="https://lh3.googleusercontent.com" crossorigin>
+    <link rel="preconnect" href="https://script.google.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <!-- Data mulai diambil di sini, bukan menunggu seluruh halaman selesai dibaca.
+         Apps Script butuh 1-3 detik, jadi head adalah tempat paling awal
+         untuk memulainya. Skrip utama di bawah tinggal memakai hasilnya. -->
+    <script>
+        window.JP_API = "https://script.google.com/macros/s/AKfycbzUM4wtt93EW7nuz9NyEW5ZsPNXVhUFxnULvgco2YlHlTXf12W_FwmKvmihEkXEseeu/exec";
+        window.JP_DATA_AWAL = fetch(window.JP_API).then(function (r) {
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return r.json();
+        }).catch(function () { return null; });
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
@@ -98,10 +111,6 @@
             letter-spacing: .18em;
             text-transform: uppercase;
             color: var(--ink-faint);
-        }
-        .mono {
-            font-family: var(--f-mono);
-            font-variant-numeric: tabular-nums;
         }
         .lede {
             color: var(--ink-soft);
@@ -386,32 +395,6 @@
             margin-top: 32px;
         }
 
-        .trust {
-            display: flex;
-            gap: clamp(20px, 4vw, 46px);
-            margin-top: 44px;
-            padding-top: 26px;
-            border-top: 1px solid var(--line);
-            flex-wrap: wrap;
-        }
-        .trust div {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .trust strong {
-            font-family: var(--f-display);
-            font-size: 1.85rem;
-            font-weight: 400;
-            line-height: 1;
-        }
-        .trust span {
-            font-family: var(--f-mono);
-            font-size: .65rem;
-            letter-spacing: .13em;
-            text-transform: uppercase;
-            color: var(--ink-faint);
-        }
 
         /* --- signature: hanging tags --- */
         .hero-visual {
@@ -838,14 +821,6 @@
             color: var(--ink);
             padding: 5px 9px;
             border-radius: 2px;
-        }
-        .flag.low {
-            background: var(--accent);
-            color: #fff;
-        }
-        .flag.out {
-            background: rgba(30, 28, 27, .78);
-            color: #fff;
         }
         .flag.discount {
             background: var(--accent);
@@ -1364,10 +1339,6 @@
             opacity: 1;
             border-color: var(--ink);
         }
-        .flag.foto {
-            background: rgba(30, 28, 27, .72);
-            color: #fff;
-        }
         .qv-body {
             padding: clamp(24px, 3.4vw, 44px);
             display: flex;
@@ -1454,18 +1425,6 @@
             height: 6px;
             border-radius: 50%;
             background: #5A7A52;
-        }
-        .qv-stock.low {
-            color: var(--accent);
-        }
-        .qv-stock.low::before {
-            background: var(--accent);
-        }
-        .qv-stock.out {
-            color: var(--ink-faint);
-        }
-        .qv-stock.out::before {
-            background: var(--ink-faint);
         }
         .qv-actions {
             margin-top: auto;
@@ -1689,13 +1648,6 @@
             .ticker .tk-more {
                 display: none;
             }
-            .trust {
-                gap: 18px 26px;
-                margin-top: 34px;
-            }
-            .trust strong {
-                font-size: 1.55rem;
-            }
             .hero-visual .hangtag {
                 width: 72%;
                 min-width: 72%;
@@ -1869,7 +1821,7 @@
             <div id="etalaseError" class="empty" style="display:none">
                 <h4>Catalog couldn't load</h4>
                 <p id="etalaseErrorMsg">Check your internet connection and try again.</p>
-                <button class="btn btn--line" onclick="loadEtalase()">Reload</button>
+                <button class="btn btn--line" id="etalaseRetry">Reload</button>
             </div>
 
             <div id="etalaseContainer"></div>
@@ -2052,900 +2004,921 @@
 
     <script>
         /* ============================================================
-           KONFIGURASI
+           JASTIP PREMIUM — logika halaman
+           Urutan file: konfigurasi, state, util, DOM, data,
+           render, filter, quick view, testimoni, pemuatan, init.
            ============================================================ */
-        var SHEET_API_URL = "https://script.google.com/macros/s/AKfycbzUM4wtt93EW7nuz9NyEW5ZsPNXVhUFxnULvgco2YlHlTXf12W_FwmKvmihEkXEseeu/exec";
-        var WA_NUMBER = "6285121804117";
+        (function () {
+            "use strict";
 
-        var CACHE_KEY = "jastippremium_v2";
-        var CACHE_TTL = 5 * 60 * 1000;
-        var PH = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='3' height='4'%3E%3C/svg%3E";
-        var FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'%3E%3Crect width='300' height='400' fill='%23EBE4DF'/%3E%3Ctext x='150' y='205' font-family='Georgia,serif' font-size='16' fill='%237E5C63' text-anchor='middle'%3EFoto menyusul%3C/text%3E%3C/svg%3E";
+            /* ============================================================
+               1. KONFIGURASI
+               ============================================================ */
+            var CONFIG = {
+                apiUrl: window.JP_API,
+                waNumber: "6285121804117",
+                waGreeting: "Halo kak, aku mau titip beli barang dari Jakarta Premium Outlet. Boleh dibantu?",
+                cacheKey: "jastippremium_v2",
+                cacheTtl: 5 * 60 * 1000,
+                fetchRetry: 2,
+                fetchDelay: 1500,
+                fetchTimeout: 12000,
+                statusTersembunyi: ["sembunyi"],
+                jumlahHero: 3,
+                minBrandStrip: 4,
+                jedaTestimoni: 5200
+            };
 
-        /* ============================================================
-           STATE
-           ============================================================ */
-        var allProducts = [],
-            etalaseProducts = [];
-        var activeFilter = "all",
-            activeBrand = "all",
-            searchQuery = "";
-        var lazyObs = null;
-        var testiSlides = [],
-            testiCurrent = 0,
-            testiTimer = null,
-            testiTouchX = 0;
-        var qvLastFocused = null;
-        var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            var IMG_GAGAL = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 400'%3E%3Crect width='300' height='400' fill='%23EBE4DF'/%3E%3Ctext x='150' y='205' font-family='Georgia,serif' font-size='16' fill='%237E5C63' text-anchor='middle'%3EFoto menyusul%3C/text%3E%3C/svg%3E";
 
-        /* ============================================================
-           HELPERS
-           ============================================================ */
-        function esc(s) {
-            return String(s == null ? "" : s).replace(/[&<>"']/g, function(c) {
-                return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" } [c];
-            });
-        }
+            /* Nama kolom sheet -> field produk. Semua dicocokkan tanpa
+               peduli huruf besar/kecil, jadi header versi lama tetap jalan. */
+            var KOLOM = {
+                nama: ["PRODUCT", "nama", "produk"],
+                brand: ["BRAND", "brand"],
+                kategori: ["CATEGORY", "kategori"],
+                ukuran: ["VARIANT", "ukuran", "varian"],
+                hargaOri: ["ORI STORE PRICE", "HARGA TOKO", "harga_toko", "ori"],
+                hargaDiskonToko: ["DISCOUNTED STORE PRICE", "DISKON", "diskon"],
+                fee: ["FEE"],
+                hargaJual: ["SELLING PRICE", "HARGA JUAL", "harga_jual", "jual"],
+                status: ["STATUS", "status"],
+                link: ["LINK", "url", "tautan"],
+                foto: ["IMAGES", "GAMBAR", "image", "img", "foto", "photos", "gambar2", "images2"]
+            };
 
-        function titleCase(s) { s = String(s || ""); return s.charAt(0).toUpperCase() + s.slice(1); }
+            /* ============================================================
+               2. STATE
+               ============================================================ */
+            var produk = [];
+            var filter = { kategori: "all", brand: "all", cari: "" };
 
-        function fmtPrice(v) {
-            var s = String(v == null ? "" : v).trim();
-            if (!s) return "";
-            var cleaned = s.replace(/rp/i, "").replace(/[,\s]/g, "").trim();
-            var num = parseFloat(cleaned);
-            if (!isNaN(num) && num > 0) {
-                return "Rp " + num.toLocaleString("id-ID");
-            }
-            return s;
-        }
+            var galeri = { daftar: [], indeks: 0 };
+            var testi = { slides: [], aktif: 0, timer: null, sentuhX: 0 };
 
-        function isYes(v) { var s = String(v || "").toLowerCase().trim(); return s === "ya" || s === "yes" || s === "true" || s ===
-                "1"; }
+            var fokusSebelumQV = null;
+            var hematGerak = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        function starsHTML(rating) {
-            var n = parseInt(rating, 10);
-            if (isNaN(n)) n = 5;
-            var h = "";
-            for (var i = 0; i < 5; i++) h += i < n ? "★" : '<span class="off">★</span>';
-            return h;
-        }
-
-        function biggerImg(src) {
-            var s = String(src || "");
-            if (/googleusercontent\.com\/d\//.test(s)) return s.replace(/=w\d+.*$/, "=w1200");
-            return s.replace(/w=\d+/, "w=900").replace(/q=\d+/, "q=85");
-        }
-
-        function waLink(text) { return "https://wa.me/" + WA_NUMBER + (text ? "?text=" + encodeURIComponent(text) : ""); }
-
-        /* semua tombol WA umum */
-        (function initWaLinks() {
-            var generic = "Halo kak, aku mau titip beli barang dari Jakarta Premium Outlet. Boleh dibantu?";
-            var els = document.querySelectorAll("[data-wa]");
-            for (var i = 0; i < els.length; i++) {
-                els[i].setAttribute("href", waLink(generic));
-                els[i].setAttribute("target", "_blank");
-                els[i].setAttribute("rel", "noopener");
-            }
-            var d = document.getElementById("waDisplay");
-            if (d && WA_NUMBER) {
-                var n = WA_NUMBER.replace(/^62/, "");
-                d.textContent = "+62 " + n.replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
-            }
-            document.getElementById("year").textContent = new Date().getFullYear();
-        })();
-
-        /* ============================================================
-           WHATSAPP ORDER — hanya tampilkan harga jastip, tanpa harga toko
-           ============================================================ */
-        function orderWA(item) {
-            var lines = [
-                "Halo kak, aku mau titip beli barang ini dari JPO:",
-                "",
-                "Barang : " + item.nama,
-                "Brand  : " + (item.brand || "-"),
-                "Varian : " + (item.ukuran || "-"),
-                "Harga : " + fmtPrice(item.harga_jual)
-            ];
-            lines.push("", "Masih ready kak?");
-            window.open(waLink(lines.join("\n")), "_blank");
-        }
-
-        /* ============================================================
-           HEADER / DRAWER
-           ============================================================ */
-        var masthead = document.getElementById("masthead");
-        var burger = document.getElementById("burger");
-        var drawer = document.getElementById("drawer");
-
-        window.addEventListener("scroll", function() {
-            masthead.classList.toggle("is-stuck", window.scrollY > 8);
-        }, { passive: true });
-
-        function setDrawer(open) {
-            drawer.classList.toggle("is-open", open);
-            burger.classList.toggle("is-open", open);
-            burger.setAttribute("aria-expanded", open ? "true" : "false");
-            burger.setAttribute("aria-label", open ? "Tutup menu" : "Buka menu");
-            drawer.setAttribute("aria-hidden", open ? "false" : "true");
-            document.body.style.overflow = open ? "hidden" : "";
-        }
-        burger.addEventListener("click", function() { setDrawer(!drawer.classList.contains("is-open")); });
-        drawer.querySelectorAll("[data-close]").forEach(function(el) {
-            el.addEventListener("click", function() { setDrawer(false); });
-        });
-        document.addEventListener("keydown", function(e) {
-            if (e.key !== "Escape") return;
-            if (drawer.classList.contains("is-open")) setDrawer(false);
-            if (document.getElementById("quickView").classList.contains("is-open")) closeQuickView();
-        });
-
-        /* ============================================================
-           REVEAL ON SCROLL
-           ============================================================ */
-        (function initReveal() {
-            var els = document.querySelectorAll(".reveal");
-            if (reduceMotion || !("IntersectionObserver" in window)) {
-                els.forEach(function(el) { el.classList.add("is-in"); });
-                return;
-            }
-            var io = new IntersectionObserver(function(entries) {
-                entries.forEach(function(en) {
-                    if (en.isIntersecting) { en.target.classList.add("is-in");
-                        io.unobserve(en.target); }
+            /* ============================================================
+               3. UTIL
+               ============================================================ */
+            function esc(s) {
+                return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+                    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
                 });
-            }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
-            els.forEach(function(el) { io.observe(el); });
-        })();
-
-        /* ============================================================
-           LAZY IMAGES
-           ============================================================ */
-        function initLazyObs() {
-            if (lazyObs || !("IntersectionObserver" in window)) return;
-            lazyObs = new IntersectionObserver(function(entries, obs) {
-                entries.forEach(function(en) {
-                    if (!en.isIntersecting) return;
-                    var img = en.target;
-                    if (img.dataset.src) img.src = img.dataset.src;
-                    obs.unobserve(img);
-                });
-            }, { rootMargin: "300px 0px" });
-        }
-
-        function observeLazy(root) {
-            initLazyObs();
-            var imgs = root.querySelectorAll("img[data-src]");
-            for (var i = 0; i < imgs.length; i++) {
-                if (lazyObs) lazyObs.observe(imgs[i]);
-                else imgs[i].src = imgs[i].dataset.src;
             }
-        }
 
-        function imgFallback(img) { img.onerror = null;
-            img.src = FALLBACK_IMG; }
+            function titleCase(s) {
+                s = String(s || "");
+                return s.charAt(0).toUpperCase() + s.slice(1);
+            }
 
-        /* ============================================================
-           CACHE + FETCH
-           ============================================================ */
-        function getCached() {
-            try {
-                var r = sessionStorage.getItem(CACHE_KEY);
-                if (!r) return null;
-                var p = JSON.parse(r);
-                return Date.now() - p.ts < CACHE_TTL ? p.data : null;
-            } catch (e) { return null; }
-        }
+            /* "Rp 1,700,000.00", "1.700.000", 1700000 -> 1700000 */
+            function keAngka(nilai) {
+                var s = String(nilai == null ? "" : nilai).replace(/[^0-9.,-]/g, "").trim();
+                if (!s) return 0;
+                s = s.replace(/[.,](?=\d{3}(?:[.,]|$))/g, "").replace(",", ".");
+                var n = parseFloat(s);
+                return isFinite(n) && n > 0 ? n : 0;
+            }
 
-        function setCache(d) {
-            try { sessionStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data: d })); } catch (e) {}
-        }
+            function formatRupiah(n) {
+                return n > 0 ? "Rp " + Math.round(n).toLocaleString("id-ID") : "";
+            }
 
-        async function robustFetch(url, retries, delay) {
-            for (var i = 0; i <= retries; i++) {
-                try {
-                    var ctrl = new AbortController();
-                    var timer = setTimeout(function() { ctrl.abort(); }, 12000);
-                    var res = await fetch(url, { signal: ctrl.signal });
-                    clearTimeout(timer);
-                    if (!res.ok) throw new Error("HTTP " + res.status);
-                    return await res.json();
-                } catch (e) {
-                    if (i === retries) throw e;
-                    await new Promise(function(r) { setTimeout(r, delay * (i + 1)); });
+            function linkWA(teks) {
+                return "https://wa.me/" + CONFIG.waNumber + (teks ? "?text=" + encodeURIComponent(teks) : "");
+            }
+
+            /* Google melayani foto dalam ukuran apa pun lewat akhiran =wNNN,
+               dan -rw meminta WebP. Kartu tidak perlu foto 1200px, jadi tiap
+               tempat minta ukuran secukupnya. URL non-Google dibiarkan. */
+            function fotoGoogle(u) {
+                return /googleusercontent\.com/.test(String(u || ""));
+            }
+
+            function urlFoto(u, lebar) {
+                if (!fotoGoogle(u)) return u;
+                return u + "=w" + lebar + "-rw";
+            }
+
+            function srcsetFoto(u, daftarLebar) {
+                if (!fotoGoogle(u)) return "";
+                return daftarLebar.map(function (w) {
+                    return urlFoto(u, w) + " " + w + "w";
+                }).join(", ");
+            }
+
+            /* Atribut lengkap untuk satu tag img */
+            function atributFoto(u, lebar, daftarLebar, sizes) {
+                if (!u) return 'src="' + IMG_GAGAL + '"';
+                var set = srcsetFoto(u, daftarLebar);
+                return 'src="' + esc(urlFoto(u, lebar)) + '"' +
+                    (set ? ' srcset="' + esc(set) + '" sizes="' + sizes + '"' : '');
+            }
+
+            function bintangHTML(rating) {
+                var n = parseInt(rating, 10);
+                if (isNaN(n)) n = 5;
+                var h = "";
+                for (var i = 0; i < 5; i++) h += i < n ? "★" : '<span class="off">★</span>';
+                return h;
+            }
+
+            /* ============================================================
+               4. DOM
+               ============================================================ */
+            var el = {};
+            [
+                "masthead", "burger", "drawer", "year", "waDisplay",
+                "heroVisual", "brandStrip", "brandTrack",
+                "etalase", "tabs", "brandSelect", "searchInput", "footCats",
+                "etalaseLoading", "etalaseContainer", "etalaseError", "etalaseErrorMsg",
+                "etalaseRetry", "noResult", "resetFilters",
+                "quickView", "qvClose", "qvImg", "qvThumbs", "qvPrev", "qvNext", "qvCount",
+                "qvBrand", "qvName", "qvPriceOriginal", "qvPriceSelling",
+                "qvStock", "qvSizeRow", "qvSize", "qvDiscountRow", "qvDiscount", "qvCat", "qvBuy",
+                "testimoni", "testiStage", "testiViewport", "testiTrack", "testiDots", "testiPrev", "testiNext"
+            ].forEach(function (id) { el[id] = document.getElementById(id); });
+
+            /* Satu penangan untuk semua gambar yang gagal dimuat,
+               termasuk gambar yang baru disisipkan lewat innerHTML. */
+            document.addEventListener("error", function (e) {
+                var t = e.target;
+                if (!t || t.tagName !== "IMG") return;
+
+                /* Kalau versi WebP yang ditolak, coba sekali lagi tanpa -rw
+                   sebelum menyerah ke gambar cadangan. */
+                if (!t.dataset.tanpaWebp && t.src.indexOf("-rw") !== -1) {
+                    t.dataset.tanpaWebp = "1";
+                    t.removeAttribute("srcset");
+                    t.src = t.src.replace(/-rw$/, "");
+                    return;
                 }
+                if (t.dataset.gagal) return;
+                t.dataset.gagal = "1";
+                t.removeAttribute("srcset");
+                t.src = IMG_GAGAL;
+            }, true);
+
+            /* ============================================================
+               5. DATA — baca baris sheet jadi objek produk
+               ============================================================ */
+            function ambilKolom(baris, kandidat) {
+                var cari = kandidat.map(function (k) { return k.toLowerCase().trim(); });
+                for (var key in baris) {
+                    if (!Object.prototype.hasOwnProperty.call(baris, key)) continue;
+                    if (cari.indexOf(key.toLowerCase().trim()) === -1) continue;
+                    var val = baris[key];
+                    if (val !== undefined && val !== null && String(val).trim() !== "") return String(val).trim();
+                }
+                return "";
             }
-        }
 
-        /* ============================================================
-           SKELETON
-           ============================================================ */
-        function skCard() {
-            return '<div class="sk-card"><div class="sk sk-img"></div><div class="sk sk-l1"></div><div class="sk sk-l2"></div><div class="sk sk-l3"></div></div>';
-        }
+            /* Disimpan tanpa akhiran ukuran, biar tiap tempat bisa minta
+               ukurannya sendiri. Sekaligus membuat foto yang sama dengan
+               akhiran berbeda terbaca sebagai satu foto. */
+            function rapikanUrlFoto(url) {
+                var u = String(url || "").trim();
+                if (!u) return "";
+                var m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]{20,})/);
+                if (m) return "https://lh3.googleusercontent.com/d/" + m[1];
+                if (!/^https?:\/\//i.test(u)) return "";
+                return fotoGoogle(u) ? u.replace(/=[a-z]\d+[^\/]*$/i, "") : u;
+            }
 
-        function showSkeleton() {
-            var hero = "";
-            ["main", "left", "right"].forEach(function(pos) {
-                hero += '<div class="hangtag ' + pos + '"><div class="frame"><div class="sk" style="aspect-ratio:3/4"></div></div><div class="plate"><span class="eyelet"></span><div class="plate-txt" style="flex:1"><div class="sk" style="height:9px;width:70%"></div><div class="sk" style="height:8px;width:40%;margin-top:6px"></div></div></div></div>';
-            });
-            document.getElementById("heroVisual").innerHTML = hero;
+            function tampakGambar(u) {
+                if (!/^https?:\/\//i.test(u)) return false;
+                if (/\.(jpe?g|png|webp|gif|avif|bmp)(\?|#|$)/i.test(u)) return true;
+                return /googleusercontent\.com|drive\.google\.com|cloudinary|imgur|unsplash|imagekit|\/cdn\//i.test(u);
+            }
 
-            var cards = "";
-            for (var i = 0; i < 8; i++) cards += skCard();
-            document.getElementById("etalaseLoading").innerHTML =
-                '<div class="cat-block"><div class="cat-head"><div class="sk" style="height:20px;width:130px"></div><div class="rule"></div></div><div class="grid">' + cards +
-                '</div></div>';
-            document.getElementById("etalaseLoading").style.display = "";
-        }
+            function pecahDaftar(teks) {
+                return String(teks).split(/\s*\|\s*|\r?\n|\s*;\s*|\s*,\s*(?=https?:\/\/)/);
+            }
 
-        function hideSkeleton() { document.getElementById("etalaseLoading").style.display = "none"; }
+            /* Foto bisa datang sebagai array, sebagai satu sel berisi
+               beberapa URL, atau menumpang di kolom LINK. */
+            function kumpulkanFoto(baris) {
+                var daftar = [];
 
-        /* ============================================================
-           NORMALIZE — diskon dihitung dari ori store price dan discounted store price
-           ============================================================ */
-        function pickCaseInsensitive(obj, keys) {
-            var lowerKeys = keys.map(function(k) { return k.toLowerCase().trim(); });
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    var lower = key.toLowerCase().trim();
-                    if (lowerKeys.indexOf(lower) !== -1) {
-                        var val = obj[key];
-                        if (val !== undefined && val !== null && String(val).trim() !== "") {
-                            return String(val).trim();
-                        }
+                for (var key in baris) {
+                    if (Object.prototype.hasOwnProperty.call(baris, key) &&
+                        Array.isArray(baris[key]) &&
+                        /^(foto|fotos|images|gambar|photos)$/i.test(key.trim())) {
+                        daftar = baris[key].slice();
+                        break;
                     }
                 }
-            }
-            return "";
-        }
-
-        function rapikanUrlFoto(url) {
-            var u = String(url || "").trim();
-            if (!u) return "";
-            var m = u.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=\w+&)?id=)([\w-]{20,})/);
-            if (m) return "https://lh3.googleusercontent.com/d/" + m[1] + "=w1200";
-            if (/^https?:\/\//i.test(u)) return u;
-            return "";
-        }
-
-        function tampakGambar(u) {
-            if (!/^https?:\/\//i.test(u)) return false;
-            if (/\.(jpe?g|png|webp|gif|avif|bmp)(\?|#|$)/i.test(u)) return true;
-            return /googleusercontent\.com|drive\.google\.com|cloudinary|imgur|unsplash|imagekit|\/cdn\//i.test(u);
-        }
-
-        function kumpulkanFoto(r) {
-            var daftar = [];
-            for (var key in r) {
-                if (r.hasOwnProperty(key) && Array.isArray(r[key]) &&
-                    /^(foto|fotos|images|gambar|photos)$/i.test(key.trim())) {
-                    daftar = r[key].slice();
-                    break;
+                if (!daftar.length) {
+                    var sel = ambilKolom(baris, KOLOM.foto);
+                    if (sel) daftar = pecahDaftar(sel);
                 }
-            }
-            if (!daftar.length) {
-                var mentah = pickCaseInsensitive(r, ["IMAGES", "images", "GAMBAR", "gambar",
-                    "image", "img", "foto", "photos", "gambar2", "images2"
-                ]);
-                if (mentah) daftar = String(mentah).split(/\s*\|\s*|\r?\n|\s*;\s*|\s*,\s*(?=https?:\/\/)/);
-            }
-            var link = pickCaseInsensitive(r, ["LINK", "link", "url", "URL", "tautan"]);
-            var linkFoto = "";
-            if (link) {
-                var potongan = String(link).split(/\s*\|\s*|\r?\n|\s*,\s*(?=https?:\/\/)/);
-                var semuaGambar = potongan.filter(function(x) { return tampakGambar(rapikanUrlFoto(x)); });
-                if (semuaGambar.length) {
-                    if (!daftar.length) daftar = potongan;
-                    linkFoto = "gambar";
+
+                var link = ambilKolom(baris, KOLOM.link);
+                var linkBerisiFoto = false;
+                if (link) {
+                    var potongan = pecahDaftar(link);
+                    linkBerisiFoto = potongan.some(function (x) { return tampakGambar(rapikanUrlFoto(x)); });
+                    if (linkBerisiFoto && !daftar.length) daftar = potongan;
                 }
-            }
-            var bersih = [];
-            daftar.forEach(function(u) {
-                var rapi = rapikanUrlFoto(u);
-                if (rapi && bersih.indexOf(rapi) === -1) bersih.push(rapi);
-            });
-            return {
-                galeri: bersih,
-                link: linkFoto === "gambar" ? "" : String(link || "").trim()
-            };
-        }
 
-        function normalizeRow(r) {
-            var hargaToko = pickCaseInsensitive(r, ["ORI STORE PRICE", "HARGA TOKO", "harga_toko", "ori"]);
-            var hargaJual = pickCaseInsensitive(r, ["SELLING PRICE", "HARGA JUAL", "harga_jual", "jual"]);
-            var hargaDiskon = pickCaseInsensitive(r, ["DISCOUNTED STORE PRICE", "DISKON", "diskon"]);
-            var selisih = pickCaseInsensitive(r, ["SELISIH", "selisih"]);
-            var foto = kumpulkanFoto(r);
-
-            var tokoNum = parseFloat(hargaToko.replace(/[^\d.]/g, "")) || 0;
-            var diskonNum = parseFloat(hargaDiskon.replace(/[^\d.]/g, "")) || 0;
-            var jualNum = parseFloat(hargaJual.replace(/[^\d.]/g, "")) || 0;
-
-            // Diskon dihitung dari ori store price vs discounted store price
-            var diskonValue = Math.max(0, tokoNum - diskonNum);
-            var diskonPersen = (tokoNum > 0) ? (diskonValue / tokoNum) * 100 : 0;
-
-            return {
-                nama: pickCaseInsensitive(r, ["PRODUCT", "product", "nama", "Nama", "produk"]),
-                brand: pickCaseInsensitive(r, ["BRAND", "brand", "Brand"]),
-                kategori: pickCaseInsensitive(r, ["CATEGORY", "category", "kategori", "Kategori"]) || "lainnya",
-                ukuran: pickCaseInsensitive(r, ["VARIANT", "variant", "ukuran", "Ukuran", "varian"]),
-                harga_toko: hargaToko,
-                harga_jual: hargaJual || hargaToko,
-                diskon: hargaDiskon || (diskonValue > 0 ? String(diskonValue) : ""),
-                fee: pickCaseInsensitive(r, ["FEE", "fee"]),
-                selisih: selisih || (diskonValue > 0 ? String(diskonValue) : ""),
-                gambar: foto.galeri[0] || "",
-                galeri: foto.galeri,
-                link: foto.link,
-                highlight: pickCaseInsensitive(r, ["highlight", "Highlight", "unggulan", "Unggulan"]),
-                stok: pickCaseInsensitive(r, ["stok", "Stok", "stock", "Stock"]) || "10",
-                diskonValue: diskonValue,
-                diskonPersen: diskonPersen
-            };
-        }
-
-        /* ============================================================
-           HERO HANGTAGS
-           ============================================================ */
-        function renderHero(products) {
-            var el = document.getElementById("heroVisual");
-            var picks = products.slice(0, 3);
-            if (!picks.length) { el.innerHTML = ""; return; }
-            var pos = ["main", "left", "right"];
-            el.innerHTML = picks.map(function(item, i) {
-                var img = item.gambar || FALLBACK_IMG;
-                var priceDisplay = fmtPrice(item.harga_jual) || fmtPrice(item.harga_toko) || "Tanya harga";
-                return '<figure class="hangtag ' + pos[i] + '">' +
-                    '<span class="string"></span>' +
-                    '<div class="frame"><img src="' + esc(img) + '" alt="' + esc(item.nama) +
-                    '" onerror="imgFallback(this)" fetchpriority="high" decoding="async"></div>' +
-                    '<figcaption class="plate"><span class="eyelet"></span><span class="plate-txt">' +
-                    '<span class="t-name">' + esc(item.nama || "Produk") + '</span>' +
-                    '<span class="t-price">' + esc(priceDisplay) + '</span>' +
-                    '</span></figcaption></figure>';
-            }).join("");
-        }
-
-        /* ============================================================
-           BRAND STRIP
-           ============================================================ */
-        function renderBrandStrip(products) {
-            var seen = {},
-                brands = [];
-            products.forEach(function(p) {
-                var b = p.brand.trim();
-                if (b && !seen[b.toLowerCase()]) { seen[b.toLowerCase()] = 1;
-                    brands.push(b); }
-            });
-            if (brands.length < 4) return;
-            var one = brands.map(function(b) { return "<span>" + esc(b) + "</span>"; }).join("");
-            document.getElementById("brandTrack").innerHTML = one + one;
-            document.getElementById("brandStrip").hidden = false;
-        }
-
-        /* ============================================================
-           CARD — diskon persen di badge
-           ============================================================ */
-        function cardHTML(item, idx) {
-            var stock = parseInt(item.stok, 10) || 10;
-            var flag = "",
-                cta,
-                cls = "card";
-            if (stock === 0) {
-                flag = '<span class="flag out">Out of stock</span>';
-                cta = '<button class="card-cta" disabled>Out of stock</button>';
-                cls += " is-out";
-            } else if (stock <= 2) {
-                flag = '<span class="flag low">Left ' + stock + '</span>';
-                cta = '<button class="card-cta" data-order="' + idx + '">Order</button>';
-            } else {
-                cta = '<button class="card-cta" data-order="' + idx + '">Order</button>';
-            }
-
-            // Diskon dari ori store price vs discounted store price
-            var diskonPersen = Math.round(item.diskonPersen || 0);
-            if (diskonPersen > 0) {
-                flag += '<span class="flag discount">Disc ' + diskonPersen + '%</span>';
-            }
-
-            var img = item.gambar || FALLBACK_IMG;
-            var priceOriginal = fmtPrice(item.harga_toko);
-            var priceSelling = fmtPrice(item.harga_jual) || priceOriginal || "Tanya harga";
-
-            return '<article class="' + cls + '" tabindex="0" data-idx="' + idx + '" ' +
-                'aria-label="View details for ' + esc(item.nama) + '">' +
-                '<div class="card-media">' + flag +
-                '<img data-src="' + esc(img) + '" src="' + PH + '" alt="' + esc(item.nama) + '" onerror="imgFallback(this)" loading="lazy" decoding="async">' +
-                '<span class="veil">View details</span></div>' +
-                '<div class="card-body">' +
-                '<span class="card-brand">' + esc(item.brand || "No brand") + '</span>' +
-                '<span class="card-name">' + esc(item.nama) + '</span>' +
-                '<div class="card-price-row">' +
-                (priceOriginal && priceOriginal !== priceSelling ? '<span class="card-price-original">' + esc(
-                    priceOriginal) + '</span>' : '') +
-                '<span class="card-price-selling">' + esc(priceSelling) + '</span>' +
-                '</div>' +
-                (item.ukuran ? '<span class="card-size">' + esc(item.ukuran) + '</span>' : '') +
-                cta + '</div></article>';
-        }
-
-        /* ============================================================
-           TABS
-           ============================================================ */
-        function renderTabs(categories) {
-            var row = document.getElementById("tabs");
-            var html = '<button class="tab is-active" role="tab" aria-selected="true" data-filter="all">All</button>';
-            categories.forEach(function(c) {
-                html += '<button class="tab" role="tab" aria-selected="false" data-filter="' + esc(c) + '">' + esc(
-                    titleCase(c)) + '</button>';
-            });
-            row.innerHTML = html;
-            var tabs = row.querySelectorAll(".tab");
-            tabs.forEach(function(t) {
-                t.addEventListener("click", function() {
-                    tabs.forEach(function(x) { x.classList.remove("is-active");
-                        x.setAttribute("aria-selected", "false"); });
-                    this.classList.add("is-active");
-                    this.setAttribute("aria-selected", "true");
-                    activeFilter = this.dataset.filter;
-                    renderBrandOptions();
-                    applyFilter();
+                var bersih = [];
+                daftar.forEach(function (u) {
+                    var rapi = rapikanUrlFoto(u);
+                    if (rapi && bersih.indexOf(rapi) === -1) bersih.push(rapi);
                 });
-            });
 
-            var fc = document.getElementById("footCats");
-            fc.innerHTML = categories.slice(0, 5).map(function(c) {
-                return '<li><a href="#etalase" data-footcat="' + esc(c) + '">' + esc(titleCase(c)) + '</a></li>';
-            }).join("") || '<li><a href="#etalase">Semua barang</a></li>';
-            fc.querySelectorAll("[data-footcat]").forEach(function(a) {
-                a.addEventListener("click", function() {
-                    setFilters(this.dataset.footcat, "all", "");
-                });
-            });
-        }
-
-        /* ============================================================
-           BRAND OPTIONS
-           ============================================================ */
-        function renderBrandOptions() {
-            var sel = document.getElementById("brandSelect");
-            var seen = {},
-                brands = [];
-            etalaseProducts.forEach(function(p) {
-                if (activeFilter !== "all" && p.kategori.toLowerCase().trim() !== activeFilter) return;
-                var b = p.brand.trim();
-                if (!b) return;
-                var key = b.toLowerCase();
-                if (!seen[key]) { seen[key] = 1;
-                    brands.push(b); }
-            });
-            brands.sort(function(a, b) { return a.localeCompare(b, "id"); });
-
-            if (activeBrand !== "all" && brands.every(function(b) { return b.toLowerCase() !== activeBrand; })) {
-                activeBrand = "all";
+                return { galeri: bersih, link: linkBerisiFoto ? "" : link };
             }
 
-            sel.innerHTML = '<option value="all">All Brands</option>' +
-                brands.map(function(b) {
-                    return '<option value="' + esc(b.toLowerCase()) + '">' + esc(b) + '</option>';
-                }).join("");
-            sel.value = activeBrand;
-            sel.parentNode.classList.toggle("is-on", activeBrand !== "all");
-            sel.disabled = brands.length === 0;
-        }
+            /* Harga yang dilihat pelanggan.
+               jual   = kolom SELLING PRICE (harga toko setelah diskon + fee)
+               persen = diskon apa adanya dari tag toko
+               coret  = jual dibagi (1 - persen), jadi dihitung mundur dari
+                        dua angka di atas, bukan dari harga toko + fee.
+               Dengan cara ini badge sama persis dengan tag toko, dan
+               besar fee tidak bisa dihitung balik dari angka yang tampil
+               karena tidak ada persamaan ketiga yang mengikat fee. */
+            function hitungHarga(baris) {
+                var ori = keAngka(ambilKolom(baris, KOLOM.hargaOri));
+                var diskonToko = keAngka(ambilKolom(baris, KOLOM.hargaDiskonToko));
+                var fee = keAngka(ambilKolom(baris, KOLOM.fee));
+                var jual = keAngka(ambilKolom(baris, KOLOM.hargaJual));
 
-        /* ============================================================
-           RENDER PRODUCTS
-           ============================================================ */
-        function renderProducts(products) {
-            var container = document.getElementById("etalaseContainer");
-            var order = [],
-                grouped = {};
-            products.forEach(function(p, i) {
-                var cat = (p.kategori || "lainnya").toLowerCase().trim();
-                if (!grouped[cat]) { grouped[cat] = [];
-                    order.push(cat); }
-                grouped[cat].push(i);
-            });
+                if (!jual) jual = (diskonToko || ori) + fee;
 
-            container.innerHTML = order.map(function(cat) {
-                var cards = grouped[cat].map(function(i) { return cardHTML(products[i], i); }).join("");
-                return '<section class="cat-block" data-category="' + esc(cat) + '">' +
-                    '<div class="cat-head"><h3>' + esc(titleCase(cat)) + '</h3><span class="rule"></span>' +
-                    '<span class="count">' + grouped[cat].length + ' items</span></div>' +
-                    '<div class="grid">' + cards + '</div></section>';
-            }).join("");
+                var rasio = (ori > 0 && diskonToko > 0 && diskonToko < ori) ? (ori - diskonToko) / ori : 0;
+                var persen = Math.round(rasio * 100);
 
-            container.querySelectorAll(".card").forEach(function(card) {
-                card.addEventListener("click", function(e) {
-                    if (e.target.closest("[data-order]")) return;
-                    openQuickView(parseInt(this.dataset.idx, 10));
-                });
-                card.addEventListener("keydown", function(e) {
-                    if (e.key === "Enter" || e.key === " ") { e.preventDefault();
-                        openQuickView(parseInt(this.dataset.idx, 10)); }
-                });
-            });
-            container.querySelectorAll("[data-order]").forEach(function(btn) {
-                btn.addEventListener("click", function(e) {
-                    e.stopPropagation();
-                    orderWA(etalaseProducts[parseInt(this.dataset.order, 10)]);
-                });
-            });
+                /* dibulatkan ke ribuan terdekat biar angkanya tidak ganjil */
+                var coret = (rasio > 0 && jual > 0) ? Math.round(jual / (1 - rasio) / 1000) * 1000 : 0;
+                if (coret <= jual) { coret = 0; persen = 0; }
 
-            observeLazy(container);
-        }
-
-        /* ============================================================
-           FILTER + SEARCH
-           ============================================================ */
-        function applyFilter() {
-            var q = searchQuery.toLowerCase().trim();
-            var totalVisible = 0;
-
-            document.querySelectorAll("#etalaseContainer .cat-block").forEach(function(block) {
-                var catMatch = (activeFilter === "all" || block.dataset.category === activeFilter);
-                var shown = 0;
-                block.querySelectorAll(".card").forEach(function(card) {
-                    var p = etalaseProducts[parseInt(card.dataset.idx, 10)];
-                    var hay = (p.nama + " " + p.brand + " " + p.kategori + " " + p.ukuran).toLowerCase();
-                    var brandMatch = (activeBrand === "all" || p.brand.toLowerCase().trim() === activeBrand);
-                    var ok = catMatch && brandMatch && (!q || hay.indexOf(q) !== -1);
-                    card.style.display = ok ? "" : "none";
-                    if (ok) shown++;
-                });
-                block.style.display = shown ? "" : "none";
-                var count = block.querySelector(".count");
-                if (count) count.textContent = shown + " items";
-                totalVisible += shown;
-            });
-
-            document.getElementById("noResult").style.display = totalVisible ? "none" : "";
-        }
-
-        document.getElementById("searchInput").addEventListener("input", function() {
-            searchQuery = this.value;
-            applyFilter();
-        });
-
-        document.getElementById("brandSelect").addEventListener("change", function() {
-            activeBrand = this.value;
-            this.parentNode.classList.toggle("is-on", activeBrand !== "all");
-            applyFilter();
-        });
-
-        document.getElementById("resetFilters").addEventListener("click", function() {
-            setFilters("all", "all", "");
-            scrollToEtalase();
-        });
-
-        function scrollToEtalase() {
-            var el = document.getElementById("etalase");
-            if (el && el.scrollIntoView) el.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
-        }
-
-        function setFilters(cat, brand, query) {
-            activeFilter = cat;
-            activeBrand = brand;
-            searchQuery = query;
-            document.getElementById("searchInput").value = query;
-            document.querySelectorAll(".tab").forEach(function(t) {
-                var on = t.dataset.filter === cat;
-                t.classList.toggle("is-active", on);
-                t.setAttribute("aria-selected", on ? "true" : "false");
-            });
-            renderBrandOptions();
-            applyFilter();
-        }
-
-        /* ============================================================
-           QUICK VIEW — diskon hanya persentase, tanpa nominal
-           ============================================================ */
-        var qv = document.getElementById("quickView");
-
-        /* ---- Galeri quick view ---- */
-        var qvGaleri = [],
-            qvIndeks = 0;
-
-        function qvPasangGaleri(item) {
-            qvGaleri = (item.galeri && item.galeri.length) ? item.galeri.slice() : [];
-            qvIndeks = 0;
-
-            var stage = document.getElementById("qvImg");
-            var thumbs = document.getElementById("qvThumbs");
-            var prev = document.getElementById("qvPrev");
-            var next = document.getElementById("qvNext");
-            var hitung = document.getElementById("qvCount");
-
-            stage.alt = item.nama || "";
-            stage.onerror = function() { imgFallback(this); };
-
-            var banyak = qvGaleri.length > 1;
-            prev.hidden = !banyak;
-            next.hidden = !banyak;
-            hitung.hidden = !banyak;
-            thumbs.hidden = !banyak;
-
-            if (!qvGaleri.length) {
-                stage.src = FALLBACK_IMG;
-                thumbs.innerHTML = "";
-                return;
+                return { coret: coret, jual: jual, persen: persen };
             }
 
-            thumbs.innerHTML = qvGaleri.map(function(url, i) {
-                return '<button type="button" data-foto="' + i + '" aria-label="Foto ' + (i + 1) + '">' +
-                    '<img src="' + esc(url) + '" alt="" loading="lazy" onerror="imgFallback(this)"></button>';
-            }).join("");
+            function bacaBaris(baris) {
+                var foto = kumpulkanFoto(baris);
+                var harga = hitungHarga(baris);
 
-            qvKeFoto(0);
-        }
-
-        function qvKeFoto(i) {
-            if (!qvGaleri.length) return;
-            qvIndeks = (i + qvGaleri.length) % qvGaleri.length;
-            var stage = document.getElementById("qvImg");
-            stage.src = biggerImg(qvGaleri[qvIndeks]);
-            document.getElementById("qvCount").textContent = (qvIndeks + 1) + " / " + qvGaleri.length;
-            var tombol = document.getElementById("qvThumbs").querySelectorAll("button");
-            for (var t = 0; t < tombol.length; t++) {
-                tombol[t].className = (t === qvIndeks) ? "is-active" : "";
-            }
-        }
-
-        document.getElementById("qvPrev").addEventListener("click", function(e) {
-            e.stopPropagation();
-            qvKeFoto(qvIndeks - 1);
-        });
-        document.getElementById("qvNext").addEventListener("click", function(e) {
-            e.stopPropagation();
-            qvKeFoto(qvIndeks + 1);
-        });
-        document.getElementById("qvThumbs").addEventListener("click", function(e) {
-            var b = e.target.closest("button[data-foto]");
-            if (b) qvKeFoto(parseInt(b.dataset.foto, 10));
-        });
-        document.addEventListener("keydown", function(e) {
-            if (!qv.classList.contains("is-open") || qvGaleri.length < 2) return;
-            if (e.key === "ArrowLeft") qvKeFoto(qvIndeks - 1);
-            if (e.key === "ArrowRight") qvKeFoto(qvIndeks + 1);
-        });
-
-        /* Geser dengan jari di layar sentuh */
-        (function() {
-            var stage = document.querySelector(".qv-stage");
-            if (!stage) return;
-            var x0 = null;
-            stage.addEventListener("touchstart", function(e) { x0 = e.touches[0].clientX; }, { passive: true });
-            stage.addEventListener("touchend", function(e) {
-                if (x0 === null || qvGaleri.length < 2) return;
-                var beda = e.changedTouches[0].clientX - x0;
-                if (Math.abs(beda) > 42) qvKeFoto(qvIndeks + (beda < 0 ? 1 : -1));
-                x0 = null;
-            }, { passive: true });
-        })();
-
-        function openQuickView(idx) {
-            var item = etalaseProducts[idx];
-            if (!item) return;
-            qvLastFocused = document.querySelector('.card[data-idx="' + idx + '"]');
-
-            var stock = parseInt(item.stok, 10) || 10;
-            qvPasangGaleri(item);
-
-            var brandBtn = document.getElementById("qvBrand");
-            brandBtn.textContent = item.brand ? item.brand + " — lihat semua" : "No brand";
-            brandBtn.disabled = !item.brand;
-            brandBtn.onclick = item.brand ? function() {
-                closeQuickView();
-                setFilters("all", item.brand.toLowerCase().trim(), "");
-                scrollToEtalase();
-            } : null;
-
-            document.getElementById("qvName").textContent = item.nama;
-
-            var priceOriginal = fmtPrice(item.harga_toko);
-            var priceSelling = fmtPrice(item.harga_jual) || priceOriginal || "Tanya harga";
-            document.getElementById("qvPriceOriginal").textContent = priceOriginal && priceOriginal !== priceSelling ?
-                priceOriginal : "";
-            document.getElementById("qvPriceSelling").textContent = priceSelling;
-            document.getElementById("qvCat").textContent = titleCase(item.kategori);
-
-            var sizeRow = document.getElementById("qvSizeRow");
-            sizeRow.style.display = item.ukuran ? "" : "none";
-            document.getElementById("qvSize").textContent = item.ukuran;
-
-            // Diskon: hanya persentase, tanpa nominal — dihitung dari ori store price vs discounted store price
-            var diskonPersen = Math.round(item.diskonPersen || 0);
-            var discRow = document.getElementById("qvDiscountRow");
-            if (diskonPersen > 0) {
-                discRow.style.display = "";
-                document.getElementById("qvDiscount").textContent = diskonPersen + "%";
-            } else {
-                discRow.style.display = "none";
-            }
-
-            var stockEl = document.getElementById("qvStock");
-            var buy = document.getElementById("qvBuy");
-            if (stock === 0) {
-                stockEl.textContent = "Out of stock";
-                stockEl.className = "qv-stock out";
-                buy.disabled = true;
-                buy.className = "btn btn--line";
-                buy.innerHTML = "Out of stock";
-            } else if (stock <= 2) {
-                stockEl.textContent = "Left " + stock + " items";
-                stockEl.className = "qv-stock low";
-                buy.disabled = false;
-                buy.className = "btn btn--solid";
-                buy.innerHTML =
-                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z"/></svg> Pesan lewat WhatsApp';
-            } else {
-                stockEl.textContent = "Ready, " + stock + " available";
-                stockEl.className = "qv-stock";
-                buy.disabled = false;
-                buy.className = "btn btn--solid";
-                buy.innerHTML =
-                    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z"/></svg> Pesan lewat WhatsApp';
-            }
-            buy.onclick = stock === 0 ? null : function() { orderWA(item); };
-
-            qv.classList.add("is-open");
-            document.body.style.overflow = "hidden";
-            document.getElementById("qvClose").focus();
-        }
-
-        function closeQuickView() {
-            qv.classList.remove("is-open");
-            document.body.style.overflow = "";
-            if (qvLastFocused) qvLastFocused.focus();
-        }
-        document.getElementById("qvClose").addEventListener("click", closeQuickView);
-        qv.addEventListener("click", function(e) { if (e.target === this) closeQuickView(); });
-
-        /* ============================================================
-           TESTIMONI
-           ============================================================ */
-        function renderTestimoni(raw) {
-            if (!raw || !raw.length) return;
-            testiSlides = raw.map(function(r) {
                 return {
-                    nama: pickCaseInsensitive(r, ["nama", "Nama", "name", "Name"]),
-                    teks: pickCaseInsensitive(r, ["teks", "Teks", "text", "Text", "testimoni"]),
-                    rating: pickCaseInsensitive(r, ["rating", "Rating"]) || "5"
+                    nama: ambilKolom(baris, KOLOM.nama),
+                    brand: ambilKolom(baris, KOLOM.brand),
+                    kategori: ambilKolom(baris, KOLOM.kategori) || "lainnya",
+                    ukuran: ambilKolom(baris, KOLOM.ukuran),
+                    status: ambilKolom(baris, KOLOM.status).toLowerCase(),
+                    hargaCoret: harga.coret,
+                    hargaJual: harga.jual,
+                    diskonPersen: harga.persen,
+                    galeri: foto.galeri,
+                    gambar: foto.galeri[0] || "",
+                    link: foto.link
                 };
-            }).filter(function(s) { return s.teks; });
-            if (!testiSlides.length) return;
-
-            var section = document.getElementById("testimoni");
-            document.getElementById("testiTrack").innerHTML = testiSlides.map(function(s) {
-                return '<div class="testi-slide"><div class="stars">' + starsHTML(s.rating) + '</div>' +
-                    '<p class="testi-text">' + esc(s.teks) + '</p>' +
-                    '<span class="testi-name">' + esc(s.nama || "Pelanggan") + '</span></div>';
-            }).join("");
-
-            if (testiSlides.length < 2) {
-                document.querySelector(".testi-nav").style.display = "none";
-                section.style.display = "";
-                return;
             }
 
-            document.getElementById("testiDots").innerHTML = testiSlides.map(function(_, i) {
-                return '<button class="dot' + (i === 0 ? " is-active" : "") + '" data-i="' + i +
-                    '" aria-label="Testimoni ' + (i + 1) + '"></button>';
-            }).join("");
-            document.querySelectorAll("#testiDots .dot").forEach(function(d) {
-                d.addEventListener("click", function() { goToTesti(parseInt(this.dataset.i, 10)); });
-            });
-            document.getElementById("testiPrev").addEventListener("click", function() {
-                goToTesti(testiCurrent <= 0 ? testiSlides.length - 1 : testiCurrent - 1);
-            });
-            document.getElementById("testiNext").addEventListener("click", function() {
-                goToTesti(testiCurrent >= testiSlides.length - 1 ? 0 : testiCurrent + 1);
-            });
+            function bolehTampil(p) {
+                return !!p.nama && CONFIG.statusTersembunyi.indexOf(p.status) === -1;
+            }
 
-            var vp = document.getElementById("testiViewport");
-            vp.addEventListener("touchstart", function(e) { testiTouchX = e.touches[0].clientX;
-                stopTestiAuto(); }, { passive: true });
-            vp.addEventListener("touchend", function(e) {
-                var dx = e.changedTouches[0].clientX - testiTouchX;
-                if (Math.abs(dx) > 50) goToTesti(dx < 0 ?
-                    (testiCurrent >= testiSlides.length - 1 ? 0 : testiCurrent + 1) :
-                    (testiCurrent <= 0 ? testiSlides.length - 1 : testiCurrent - 1));
-                startTestiAuto();
-            }, { passive: true });
+            function labelHarga(p) {
+                return formatRupiah(p.hargaJual) || "Tanya harga";
+            }
 
-            var stage = document.getElementById("testiStage");
-            stage.addEventListener("mouseenter", stopTestiAuto);
-            stage.addEventListener("mouseleave", startTestiAuto);
+            /* ============================================================
+               6. RENDER
+               ============================================================ */
+            function renderHero(daftar) {
+                var pilihan = daftar.slice(0, CONFIG.jumlahHero);
+                if (!pilihan.length) { el.heroVisual.innerHTML = ""; return; }
 
-            section.style.display = "";
-            startTestiAuto();
-        }
+                /* Ukuran fotonya sengaja disamakan dengan kartu, jadi ketiga
+                   produk ini tidak diunduh dua kali saat etalase discroll. */
+                var posisi = ["main", "left", "right"];
+                el.heroVisual.innerHTML = pilihan.map(function (p, i) {
+                    return '<figure class="hangtag ' + posisi[i] + '">' +
+                        '<span class="string"></span>' +
+                        '<div class="frame"><img ' +
+                        atributFoto(p.gambar, 400, [280, 400, 600], "(min-width:900px) 300px, 40vw") +
+                        ' alt="' + esc(p.nama) + '" fetchpriority="' + (i === 0 ? "high" : "low") +
+                        '" decoding="async"></div>' +
+                        '<figcaption class="plate"><span class="eyelet"></span><span class="plate-txt">' +
+                        '<span class="t-name">' + esc(p.nama || "Produk") + '</span>' +
+                        '<span class="t-price">' + esc(labelHarga(p)) + '</span>' +
+                        '</span></figcaption></figure>';
+                }).join("");
+            }
 
-        function goToTesti(i) {
-            testiCurrent = i;
-            document.getElementById("testiTrack").style.transform = "translateX(-" + (i * 100) + "%)";
-            document.querySelectorAll("#testiDots .dot").forEach(function(d, j) {
-                d.classList.toggle("is-active", j === i);
-            });
-        }
+            function renderBrandStrip(daftar) {
+                var brands = daftarBrand(daftar);
+                if (brands.length < CONFIG.minBrandStrip) return;
+                var isi = brands.map(function (b) { return "<span>" + esc(b) + "</span>"; }).join("");
+                el.brandTrack.innerHTML = isi + isi;
+                el.brandStrip.hidden = false;
+            }
 
-        function startTestiAuto() {
-            if (reduceMotion) return;
-            stopTestiAuto();
-            testiTimer = setInterval(function() {
-                goToTesti(testiCurrent >= testiSlides.length - 1 ? 0 : testiCurrent + 1);
-            }, 5200);
-        }
+            function daftarBrand(daftar) {
+                var sudah = {}, hasil = [];
+                daftar.forEach(function (p) {
+                    var b = p.brand.trim();
+                    if (!b) return;
+                    var key = b.toLowerCase();
+                    if (!sudah[key]) { sudah[key] = 1; hasil.push(b); }
+                });
+                return hasil;
+            }
 
-        function stopTestiAuto() { if (testiTimer) { clearInterval(testiTimer);
-                testiTimer = null; } }
+            function kartuHTML(p, idx) {
+                var badge = p.diskonPersen > 0 ?
+                    '<span class="flag discount">Disc ' + p.diskonPersen + '%</span>' : '';
+                var coret = formatRupiah(p.hargaCoret);
 
-        /* ============================================================
-           PROCESS + LOAD
-           ============================================================ */
-        function processAndRender(json) {
-            var raw = Array.isArray(json) ? json : (json.data || json.result || json.produk || json.products || []);
-            var testiRaw = (json && json.testimoni) || [];
+                return '<article class="card" tabindex="0" data-idx="' + idx + '" ' +
+                    'aria-label="View details for ' + esc(p.nama) + '">' +
+                    '<div class="card-media">' + badge +
+                    '<img ' + atributFoto(p.gambar, 400, [280, 400, 600],
+                        "(min-width:1081px) 300px, (min-width:661px) 31vw, 46vw") +
+                    ' alt="' + esc(p.nama) + '" loading="lazy" decoding="async">' +
+                    '<span class="veil">View details</span></div>' +
+                    '<div class="card-body">' +
+                    '<span class="card-brand">' + esc(p.brand || "No brand") + '</span>' +
+                    '<span class="card-name">' + esc(p.nama) + '</span>' +
+                    '<div class="card-price-row">' +
+                    (coret ? '<span class="card-price-original">' + esc(coret) + '</span>' : '') +
+                    '<span class="card-price-selling">' + esc(labelHarga(p)) + '</span>' +
+                    '</div>' +
+                    (p.ukuran ? '<span class="card-size">' + esc(p.ukuran) + '</span>' : '') +
+                    '<button class="card-cta" data-order="' + idx + '">Order</button>' +
+                    '</div></article>';
+            }
 
-            allProducts = raw.map(normalizeRow).filter(function(p) { return p.nama; });
+            function renderTabs(kategori) {
+                el.tabs.innerHTML = '<button class="tab is-active" role="tab" aria-selected="true" data-filter="all">All</button>' +
+                    kategori.map(function (c) {
+                        return '<button class="tab" role="tab" aria-selected="false" data-filter="' + esc(c) + '">' +
+                            esc(titleCase(c)) + '</button>';
+                    }).join("");
 
-            var highlights = allProducts.filter(function(p) { return isYes(p.highlight); });
-            etalaseProducts = allProducts.slice();
+                el.footCats.innerHTML = kategori.slice(0, 5).map(function (c) {
+                    return '<li><a href="#etalase" data-footcat="' + esc(c) + '">' + esc(titleCase(c)) + '</a></li>';
+                }).join("") || '<li><a href="#etalase">Semua barang</a></li>';
+            }
 
-            renderHero(highlights.length ? highlights : allProducts);
-            renderBrandStrip(allProducts);
+            function renderBrandOptions() {
+                var brands = daftarBrand(produk.filter(function (p) {
+                    return filter.kategori === "all" || p.kategori.toLowerCase().trim() === filter.kategori;
+                })).sort(function (a, b) { return a.localeCompare(b, "id"); });
 
-            var seen = {},
-                categories = [];
-            etalaseProducts.forEach(function(p) {
-                var c = p.kategori.toLowerCase().trim();
-                if (!seen[c]) { seen[c] = 1;
-                    categories.push(c); }
-            });
+                var masihAda = brands.some(function (b) { return b.toLowerCase() === filter.brand; });
+                if (filter.brand !== "all" && !masihAda) filter.brand = "all";
 
-            hideSkeleton();
-            renderTabs(categories);
-            renderProducts(etalaseProducts);
-            activeFilter = "all";
-            activeBrand = "all";
-            searchQuery = "";
-            renderBrandOptions();
-            applyFilter();
-            renderTestimoni(testiRaw);
-        }
+                el.brandSelect.innerHTML = '<option value="all">All Brands</option>' +
+                    brands.map(function (b) {
+                        return '<option value="' + esc(b.toLowerCase()) + '">' + esc(b) + '</option>';
+                    }).join("");
+                el.brandSelect.value = filter.brand;
+                el.brandSelect.disabled = brands.length === 0;
+                el.brandSelect.parentNode.classList.toggle("is-on", filter.brand !== "all");
+            }
 
-        async function loadEtalase() {
-            var cached = getCached();
-            if (cached) { try { processAndRender(cached); return; } catch (e) {} }
+            function renderProducts(daftar) {
+                var urutan = [], grup = {};
+                daftar.forEach(function (p, i) {
+                    var cat = (p.kategori || "lainnya").toLowerCase().trim();
+                    if (!grup[cat]) { grup[cat] = []; urutan.push(cat); }
+                    grup[cat].push(i);
+                });
 
-            showSkeleton();
-            document.getElementById("etalaseError").style.display = "none";
-            document.getElementById("etalaseContainer").innerHTML = "";
+                el.etalaseContainer.innerHTML = urutan.map(function (cat) {
+                    var kartu = grup[cat].map(function (i) { return kartuHTML(daftar[i], i); }).join("");
+                    return '<section class="cat-block" data-category="' + esc(cat) + '">' +
+                        '<div class="cat-head"><h3>' + esc(titleCase(cat)) + '</h3><span class="rule"></span>' +
+                        '<span class="count">' + grup[cat].length + ' items</span></div>' +
+                        '<div class="grid">' + kartu + '</div></section>';
+                }).join("");
+            }
 
-            try {
-                var json = await robustFetch(SHEET_API_URL, 2, 1500);
-                if (json && json.error) throw new Error(json.error);
-                setCache(json);
-                processAndRender(json);
-            } catch (err) {
-                console.error("Load etalase error:", err);
-                hideSkeleton();
-                var hero = document.getElementById("heroVisual");
-                if (hero) hero.style.display = "none";
-                var errorDiv = document.getElementById("etalaseError");
-                if (errorDiv) errorDiv.style.display = "";
-                var errorMsg = document.getElementById("etalaseErrorMsg");
-                if (errorMsg) {
-                    errorMsg.textContent = "Gagal memuat data (" + err.message + "). Periksa koneksi, lalu muat ulang.";
+            /* ============================================================
+               7. FILTER + PENCARIAN
+               ============================================================ */
+            function terapkanFilter() {
+                var q = filter.cari.toLowerCase().trim();
+                var totalTampil = 0;
+
+                el.etalaseContainer.querySelectorAll(".cat-block").forEach(function (blok) {
+                    var cocokKategori = filter.kategori === "all" || blok.dataset.category === filter.kategori;
+                    var tampil = 0;
+
+                    blok.querySelectorAll(".card").forEach(function (kartu) {
+                        var p = produk[parseInt(kartu.dataset.idx, 10)];
+                        var teks = (p.nama + " " + p.brand + " " + p.kategori + " " + p.ukuran).toLowerCase();
+                        var cocokBrand = filter.brand === "all" || p.brand.toLowerCase().trim() === filter.brand;
+                        var cocok = cocokKategori && cocokBrand && (!q || teks.indexOf(q) !== -1);
+                        kartu.style.display = cocok ? "" : "none";
+                        if (cocok) tampil++;
+                    });
+
+                    blok.style.display = tampil ? "" : "none";
+                    var hitung = blok.querySelector(".count");
+                    if (hitung) hitung.textContent = tampil + " items";
+                    totalTampil += tampil;
+                });
+
+                el.noResult.style.display = totalTampil ? "none" : "";
+            }
+
+            function setFilter(kategori, brand, cari) {
+                filter.kategori = kategori;
+                filter.brand = brand;
+                filter.cari = cari;
+                el.searchInput.value = cari;
+                el.tabs.querySelectorAll(".tab").forEach(function (t) {
+                    var aktif = t.dataset.filter === kategori;
+                    t.classList.toggle("is-active", aktif);
+                    t.setAttribute("aria-selected", aktif ? "true" : "false");
+                });
+                renderBrandOptions();
+                terapkanFilter();
+            }
+
+            function keEtalase() {
+                if (el.etalase && el.etalase.scrollIntoView) {
+                    el.etalase.scrollIntoView({ behavior: hematGerak ? "auto" : "smooth" });
                 }
             }
-        }
 
-        loadEtalase();
+            /* ============================================================
+               8. QUICK VIEW
+               ============================================================ */
+            function qvPasangGaleri(p) {
+                galeri.daftar = p.galeri.slice();
+                galeri.indeks = 0;
+
+                var banyak = galeri.daftar.length > 1;
+                el.qvPrev.hidden = !banyak;
+                el.qvNext.hidden = !banyak;
+                el.qvCount.hidden = !banyak;
+                el.qvThumbs.hidden = !banyak;
+                el.qvImg.alt = p.nama || "";
+
+                if (!galeri.daftar.length) {
+                    el.qvImg.src = IMG_GAGAL;
+                    el.qvThumbs.innerHTML = "";
+                    return;
+                }
+
+                el.qvThumbs.innerHTML = galeri.daftar.map(function (url, i) {
+                    return '<button type="button" data-foto="' + i + '" aria-label="Foto ' + (i + 1) + '">' +
+                        '<img src="' + esc(urlFoto(url, 160)) + '" alt="" loading="lazy" decoding="async">' +
+                        '</button>';
+                }).join("");
+
+                qvKeFoto(0);
+            }
+
+            function qvKeFoto(i) {
+                if (!galeri.daftar.length) return;
+                galeri.indeks = (i + galeri.daftar.length) % galeri.daftar.length;
+                el.qvImg.removeAttribute("srcset");
+                delete el.qvImg.dataset.gagal;
+                delete el.qvImg.dataset.tanpaWebp;
+                el.qvImg.src = urlFoto(galeri.daftar[galeri.indeks], 1000);
+                el.qvCount.textContent = (galeri.indeks + 1) + " / " + galeri.daftar.length;
+                el.qvThumbs.querySelectorAll("button").forEach(function (b, t) {
+                    b.className = t === galeri.indeks ? "is-active" : "";
+                });
+            }
+
+            function bukaQuickView(idx) {
+                var p = produk[idx];
+                if (!p) return;
+
+                fokusSebelumQV = el.etalaseContainer.querySelector('.card[data-idx="' + idx + '"]');
+                qvPasangGaleri(p);
+
+                el.qvBrand.textContent = p.brand ? p.brand + " — lihat semua" : "No brand";
+                el.qvBrand.disabled = !p.brand;
+                el.qvBrand.dataset.brand = p.brand.toLowerCase().trim();
+
+                el.qvName.textContent = p.nama;
+                el.qvPriceOriginal.textContent = formatRupiah(p.hargaCoret);
+                el.qvPriceSelling.textContent = labelHarga(p);
+                el.qvCat.textContent = titleCase(p.kategori);
+
+                el.qvSizeRow.style.display = p.ukuran ? "" : "none";
+                el.qvSize.textContent = p.ukuran;
+
+                el.qvDiscountRow.style.display = p.diskonPersen > 0 ? "" : "none";
+                el.qvDiscount.textContent = p.diskonPersen + "%";
+
+                el.qvStock.textContent = "Ready";
+                el.qvBuy.dataset.order = idx;
+
+                el.quickView.classList.add("is-open");
+                document.body.style.overflow = "hidden";
+                el.qvClose.focus();
+            }
+
+            function tutupQuickView() {
+                el.quickView.classList.remove("is-open");
+                document.body.style.overflow = "";
+                if (fokusSebelumQV) fokusSebelumQV.focus();
+            }
+
+            function pesanWA(p) {
+                var pesan = [
+                    "Halo kak, aku mau titip beli barang ini dari JPO:",
+                    "",
+                    "Barang : " + p.nama,
+                    "Brand  : " + (p.brand || "-"),
+                    "Varian : " + (p.ukuran || "-"),
+                    "Harga : " + labelHarga(p),
+                    "",
+                    "Masih ready kak?"
+                ].join("\n");
+                window.open(linkWA(pesan), "_blank");
+            }
+
+            /* ============================================================
+               9. TESTIMONI
+               ============================================================ */
+            function renderTestimoni(mentah) {
+                if (!mentah || !mentah.length) return;
+
+                testi.slides = mentah.map(function (r) {
+                    return {
+                        nama: ambilKolom(r, ["nama", "name"]),
+                        teks: ambilKolom(r, ["teks", "text", "testimoni"]),
+                        rating: ambilKolom(r, ["rating"]) || "5"
+                    };
+                }).filter(function (s) { return s.teks; });
+
+                if (!testi.slides.length) return;
+
+                el.testiTrack.innerHTML = testi.slides.map(function (s) {
+                    return '<div class="testi-slide"><div class="stars">' + bintangHTML(s.rating) + '</div>' +
+                        '<p class="testi-text">' + esc(s.teks) + '</p>' +
+                        '<span class="testi-name">' + esc(s.nama || "Pelanggan") + '</span></div>';
+                }).join("");
+
+                el.testimoni.style.display = "";
+
+                if (testi.slides.length < 2) {
+                    var nav = el.testimoni.querySelector(".testi-nav");
+                    if (nav) nav.style.display = "none";
+                    return;
+                }
+
+                el.testiDots.innerHTML = testi.slides.map(function (_, i) {
+                    return '<button class="dot' + (i === 0 ? " is-active" : "") + '" data-i="' + i +
+                        '" aria-label="Testimoni ' + (i + 1) + '"></button>';
+                }).join("");
+
+                mulaiTestiOtomatis();
+            }
+
+            function keTesti(i) {
+                testi.aktif = i;
+                el.testiTrack.style.transform = "translateX(-" + (i * 100) + "%)";
+                el.testiDots.querySelectorAll(".dot").forEach(function (d, j) {
+                    d.classList.toggle("is-active", j === i);
+                });
+            }
+
+            function testiBerikut(maju) {
+                var akhir = testi.slides.length - 1;
+                if (maju) keTesti(testi.aktif >= akhir ? 0 : testi.aktif + 1);
+                else keTesti(testi.aktif <= 0 ? akhir : testi.aktif - 1);
+            }
+
+            function mulaiTestiOtomatis() {
+                if (hematGerak || testi.slides.length < 2) return;
+                hentikanTestiOtomatis();
+                testi.timer = setInterval(function () { testiBerikut(true); }, CONFIG.jedaTestimoni);
+            }
+
+            function hentikanTestiOtomatis() {
+                if (testi.timer) { clearInterval(testi.timer); testi.timer = null; }
+            }
+
+            /* ============================================================
+               10. PEMUATAN DATA
+               ============================================================ */
+            function bacaCache() {
+                try {
+                    var mentah = sessionStorage.getItem(CONFIG.cacheKey);
+                    if (!mentah) return null;
+                    var isi = JSON.parse(mentah);
+                    return Date.now() - isi.ts < CONFIG.cacheTtl ? isi.data : null;
+                } catch (e) { return null; }
+            }
+
+            function simpanCache(data) {
+                try {
+                    sessionStorage.setItem(CONFIG.cacheKey, JSON.stringify({ ts: Date.now(), data: data }));
+                } catch (e) { /* storage penuh atau diblokir, abaikan */ }
+            }
+
+            async function ambilJSON(url) {
+                var terakhir;
+                for (var i = 0; i <= CONFIG.fetchRetry; i++) {
+                    var ctrl = new AbortController();
+                    var timer = setTimeout(function () { ctrl.abort(); }, CONFIG.fetchTimeout);
+                    try {
+                        var res = await fetch(url, { signal: ctrl.signal });
+                        if (!res.ok) throw new Error("HTTP " + res.status);
+                        return await res.json();
+                    } catch (e) {
+                        terakhir = e;
+                        if (i < CONFIG.fetchRetry) {
+                            await new Promise(function (r) { setTimeout(r, CONFIG.fetchDelay * (i + 1)); });
+                        }
+                    } finally {
+                        clearTimeout(timer);
+                    }
+                }
+                throw terakhir;
+            }
+
+            function kartuSkeleton() {
+                return '<div class="sk-card"><div class="sk sk-img"></div><div class="sk sk-l1"></div>' +
+                    '<div class="sk sk-l2"></div><div class="sk sk-l3"></div></div>';
+            }
+
+            function tampilkanSkeleton() {
+                el.heroVisual.innerHTML = ["main", "left", "right"].map(function (pos) {
+                    return '<div class="hangtag ' + pos + '"><div class="frame">' +
+                        '<div class="sk" style="aspect-ratio:3/4"></div></div>' +
+                        '<div class="plate"><span class="eyelet"></span><div class="plate-txt" style="flex:1">' +
+                        '<div class="sk" style="height:9px;width:70%"></div>' +
+                        '<div class="sk" style="height:8px;width:40%;margin-top:6px"></div></div></div></div>';
+                }).join("");
+
+                var kartu = "";
+                for (var i = 0; i < 8; i++) kartu += kartuSkeleton();
+                el.etalaseLoading.innerHTML = '<div class="cat-block"><div class="cat-head">' +
+                    '<div class="sk" style="height:20px;width:130px"></div><div class="rule"></div></div>' +
+                    '<div class="grid">' + kartu + '</div></div>';
+                el.etalaseLoading.style.display = "";
+            }
+
+            function sembunyikanSkeleton() {
+                el.etalaseLoading.style.display = "none";
+            }
+
+            function olahData(json) {
+                var baris = Array.isArray(json) ? json :
+                    (json.data || json.result || json.produk || json.products || []);
+
+                produk = baris.map(bacaBaris).filter(bolehTampil);
+
+                var sudah = {}, kategori = [];
+                produk.forEach(function (p) {
+                    var c = p.kategori.toLowerCase().trim();
+                    if (!sudah[c]) { sudah[c] = 1; kategori.push(c); }
+                });
+
+                sembunyikanSkeleton();
+                renderHero(produk);
+                renderBrandStrip(produk);
+                renderTabs(kategori);
+                renderProducts(produk);
+                setFilter("all", "all", "");
+                renderTestimoni((json && json.testimoni) || []);
+            }
+
+            async function muatEtalase() {
+                var cache = bacaCache();
+                if (cache) {
+                    try { olahData(cache); return; } catch (e) { /* cache rusak, ambil ulang */ }
+                }
+
+                tampilkanSkeleton();
+                el.etalaseError.style.display = "none";
+                el.etalaseContainer.innerHTML = "";
+
+                try {
+                    /* fetch sudah dimulai di head, tinggal ditunggu di sini.
+                       Kalau gagal, baru dicoba ulang lewat ambilJSON. */
+                    var json = await (window.JP_DATA_AWAL || Promise.resolve(null));
+                    window.JP_DATA_AWAL = null;
+                    if (!json) json = await ambilJSON(CONFIG.apiUrl);
+                    if (json && json.error) throw new Error(json.error);
+                    simpanCache(json);
+                    olahData(json);
+                } catch (err) {
+                    console.error("Gagal memuat etalase:", err);
+                    sembunyikanSkeleton();
+                    el.heroVisual.style.display = "none";
+                    el.etalaseError.style.display = "";
+                    el.etalaseErrorMsg.textContent =
+                        "Gagal memuat data (" + err.message + "). Periksa koneksi, lalu muat ulang.";
+                }
+            }
+
+            /* ============================================================
+               11. INIT — semua pemasangan event dikumpulkan di sini
+               ============================================================ */
+            function bukaDrawer(buka) {
+                el.drawer.classList.toggle("is-open", buka);
+                el.burger.classList.toggle("is-open", buka);
+                el.burger.setAttribute("aria-expanded", buka ? "true" : "false");
+                el.burger.setAttribute("aria-label", buka ? "Tutup menu" : "Buka menu");
+                el.drawer.setAttribute("aria-hidden", buka ? "false" : "true");
+                document.body.style.overflow = buka ? "hidden" : "";
+            }
+
+            function initHeader() {
+                window.addEventListener("scroll", function () {
+                    el.masthead.classList.toggle("is-stuck", window.scrollY > 8);
+                }, { passive: true });
+
+                el.burger.addEventListener("click", function () {
+                    bukaDrawer(!el.drawer.classList.contains("is-open"));
+                });
+                el.drawer.querySelectorAll("[data-close]").forEach(function (a) {
+                    a.addEventListener("click", function () { bukaDrawer(false); });
+                });
+            }
+
+            function initTombolWA() {
+                document.querySelectorAll("[data-wa]").forEach(function (a) {
+                    a.setAttribute("href", linkWA(CONFIG.waGreeting));
+                    a.setAttribute("target", "_blank");
+                    a.setAttribute("rel", "noopener");
+                });
+                if (el.waDisplay) {
+                    el.waDisplay.textContent = "+62 " +
+                        CONFIG.waNumber.replace(/^62/, "").replace(/(\d{3})(\d{4})(\d+)/, "$1-$2-$3");
+                }
+                if (el.year) el.year.textContent = new Date().getFullYear();
+            }
+
+            function initReveal() {
+                var els = document.querySelectorAll(".reveal");
+                if (hematGerak || !("IntersectionObserver" in window)) {
+                    els.forEach(function (e) { e.classList.add("is-in"); });
+                    return;
+                }
+                var io = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (en) {
+                        if (!en.isIntersecting) return;
+                        en.target.classList.add("is-in");
+                        io.unobserve(en.target);
+                    });
+                }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+                els.forEach(function (e) { io.observe(e); });
+            }
+
+            function initEtalase() {
+                el.tabs.addEventListener("click", function (e) {
+                    var tab = e.target.closest(".tab");
+                    if (tab) setFilter(tab.dataset.filter, filter.brand, filter.cari);
+                });
+
+                el.footCats.addEventListener("click", function (e) {
+                    var a = e.target.closest("[data-footcat]");
+                    if (a) setFilter(a.dataset.footcat, "all", "");
+                });
+
+                el.searchInput.addEventListener("input", function () {
+                    filter.cari = this.value;
+                    terapkanFilter();
+                });
+
+                el.brandSelect.addEventListener("change", function () {
+                    filter.brand = this.value;
+                    this.parentNode.classList.toggle("is-on", filter.brand !== "all");
+                    terapkanFilter();
+                });
+
+                el.resetFilters.addEventListener("click", function () {
+                    setFilter("all", "all", "");
+                    keEtalase();
+                });
+
+                el.etalaseRetry.addEventListener("click", muatEtalase);
+
+                /* Satu listener untuk semua kartu, termasuk kartu yang
+                   dirender ulang setelah data dimuat. */
+                el.etalaseContainer.addEventListener("click", function (e) {
+                    var tombol = e.target.closest("[data-order]");
+                    if (tombol) {
+                        e.stopPropagation();
+                        pesanWA(produk[parseInt(tombol.dataset.order, 10)]);
+                        return;
+                    }
+                    var kartu = e.target.closest(".card");
+                    if (kartu) bukaQuickView(parseInt(kartu.dataset.idx, 10));
+                });
+
+                el.etalaseContainer.addEventListener("keydown", function (e) {
+                    if (e.key !== "Enter" && e.key !== " ") return;
+                    var kartu = e.target.closest(".card");
+                    if (!kartu) return;
+                    e.preventDefault();
+                    bukaQuickView(parseInt(kartu.dataset.idx, 10));
+                });
+            }
+
+            function initQuickView() {
+                el.qvClose.addEventListener("click", tutupQuickView);
+                el.quickView.addEventListener("click", function (e) {
+                    if (e.target === this) tutupQuickView();
+                });
+
+                el.qvBrand.addEventListener("click", function () {
+                    var brand = this.dataset.brand;
+                    if (!brand) return;
+                    tutupQuickView();
+                    setFilter("all", brand, "");
+                    keEtalase();
+                });
+
+                el.qvBuy.addEventListener("click", function () {
+                    var p = produk[parseInt(this.dataset.order, 10)];
+                    if (p) pesanWA(p);
+                });
+
+                el.qvPrev.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    qvKeFoto(galeri.indeks - 1);
+                });
+                el.qvNext.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    qvKeFoto(galeri.indeks + 1);
+                });
+                el.qvThumbs.addEventListener("click", function (e) {
+                    var b = e.target.closest("button[data-foto]");
+                    if (b) qvKeFoto(parseInt(b.dataset.foto, 10));
+                });
+
+                geserJari(el.quickView.querySelector(".qv-stage"), 42, {
+                    geser: function (maju) {
+                        if (galeri.daftar.length > 1) qvKeFoto(galeri.indeks + (maju ? 1 : -1));
+                    }
+                });
+            }
+
+            function initTestimoni() {
+                el.testiPrev.addEventListener("click", function () { testiBerikut(false); });
+                el.testiNext.addEventListener("click", function () { testiBerikut(true); });
+                el.testiDots.addEventListener("click", function (e) {
+                    var d = e.target.closest(".dot");
+                    if (d) keTesti(parseInt(d.dataset.i, 10));
+                });
+
+                el.testiStage.addEventListener("mouseenter", hentikanTestiOtomatis);
+                el.testiStage.addEventListener("mouseleave", mulaiTestiOtomatis);
+
+                geserJari(el.testiViewport, 50, {
+                    mulai: hentikanTestiOtomatis,
+                    geser: testiBerikut,
+                    selesai: mulaiTestiOtomatis
+                });
+            }
+
+            /* Geser dengan jari, dipakai galeri quick view dan testimoni */
+            function geserJari(target, ambang, aksi) {
+                if (!target) return;
+                var x0 = null;
+                target.addEventListener("touchstart", function (e) {
+                    x0 = e.touches[0].clientX;
+                    if (aksi.mulai) aksi.mulai();
+                }, { passive: true });
+                target.addEventListener("touchend", function (e) {
+                    if (x0 === null) return;
+                    var beda = e.changedTouches[0].clientX - x0;
+                    x0 = null;
+                    if (Math.abs(beda) > ambang) aksi.geser(beda < 0);
+                    if (aksi.selesai) aksi.selesai();
+                }, { passive: true });
+            }
+
+            function initKeyboard() {
+                document.addEventListener("keydown", function (e) {
+                    var qvTerbuka = el.quickView.classList.contains("is-open");
+
+                    if (e.key === "Escape") {
+                        if (el.drawer.classList.contains("is-open")) bukaDrawer(false);
+                        if (qvTerbuka) tutupQuickView();
+                        return;
+                    }
+                    if (!qvTerbuka || galeri.daftar.length < 2) return;
+                    if (e.key === "ArrowLeft") qvKeFoto(galeri.indeks - 1);
+                    if (e.key === "ArrowRight") qvKeFoto(galeri.indeks + 1);
+                });
+            }
+
+            initHeader();
+            initTombolWA();
+            initReveal();
+            initEtalase();
+            initQuickView();
+            initTestimoni();
+            initKeyboard();
+            muatEtalase();
+        })();
     </script>
 </body>
 </html>
