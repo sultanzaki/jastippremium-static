@@ -2670,6 +2670,8 @@
                 var baris = Array.isArray(json) ? json :
                     (json.data || json.result || json.produk || json.products || []);
 
+                baris = baris.slice().reverse();
+
                 produk = baris.map(bacaBaris).filter(bolehTampil);
 
                 var sudah = {}, kategori = [];
