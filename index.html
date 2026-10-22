@@ -22,7 +22,7 @@
     <script>
         window.JP_API = "https://script.google.com/macros/s/AKfycbzUM4wtt93EW7nuz9NyEW5ZsPNXVhUFxnULvgco2YlHlTXf12W_FwmKvmihEkXEseeu/exec";
         var initialController = new AbortController();
-        var initialTimeout = setTimeout(function () { initialController.abort(); }, 12000);
+        var initialTimeout = setTimeout(function () { initialController.abort(); }, 8000);
         window.JP_DATA_AWAL = fetch(window.JP_API, { signal: initialController.signal }).then(function (r) {
             if (!r.ok) throw new Error("HTTP " + r.status);
             return r.json();
@@ -1707,6 +1707,248 @@
         .qv-nav, .qv-close, .burger { min-width: 44px; min-height: 44px; }
         button:disabled { cursor: wait; opacity: .65; }
         @media (max-width: 660px) { .search input, .select select { font-size: 16px; } }
+
+        .wordmark .dot { display: inline; width: auto; height: auto; border-radius: 0; background: none; }
+        .icon-arrow { display: inline-block; width: 15px; height: 15px; vertical-align: middle; flex: none; }
+        .mobile-dock svg { width: 17px; height: 17px; flex: none; }
+        .editorial-caption .icon-arrow { width: 10px; height: 10px; }
+        /* Storefront refinement: warm paper, editorial type, clear shopping actions. */
+        :root { --wrap: 1440px; --gut: clamp(20px, 5vw, 72px); --ink-faint: #817772; --header-h: 78px; }
+        body { line-height: 1.65; }
+        .eyebrow { color: #81716b; font-size: .66rem; }
+        .ticker { font-size: .62rem; letter-spacing: .12em; padding: 8px 16px; }
+        .masthead { background: rgba(245,241,238,.96); border-bottom: 1px solid var(--line); }
+        .masthead .wrap { grid-template-columns: 1fr auto 1fr; }
+        .wordmark { font-size: 1.7rem; }
+        .navlinks { gap: 24px; }
+        .navlinks a { font-size: .67rem; letter-spacing: .08em; }
+        .btn { min-height: 48px; border-radius: 3px; font-size: .68rem; padding: 14px 22px; letter-spacing: .08em; }
+        .btn--solid { background: var(--deep); }
+        .btn:active, .card-cta:active { transform: translateY(1px); }
+        .hero { padding-top: 52px; padding-bottom: 60px; }
+        .hero-grid { grid-template-columns: 1fr 1fr; gap: 6%; }
+        .hero-kicker { display: flex; align-items: center; gap: 9px; font-family: var(--f-mono); text-transform: uppercase; font-size: .6rem; letter-spacing: .09em; color: var(--ink-soft); }
+        .hero-kicker > span { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
+        .hero h1 { font-size: clamp(3.3rem,5.5vw,5.6rem); line-height: 1.02; margin-top: 25px; letter-spacing: -.035em; }
+        .hero .lede { font-size: .94rem; line-height: 1.8; max-width: 43ch; margin-top: 22px; }
+        .hero-actions { margin-top: 28px; gap: 10px; }
+        .hero-actions .btn--line { border-color: transparent; padding-inline: 10px; text-transform: none; letter-spacing: 0; font-size: .82rem; }
+        .hero-actions .btn--line:hover { background: transparent; color: var(--accent); }
+        .hero-reassurance { display: flex; gap: 18px; border-top: 1px solid var(--line); margin-top: 34px; padding-top: 19px; }
+        .hero-reassurance > span { font: .6rem var(--f-mono); color: var(--accent); }
+        .hero-reassurance b { display: block; margin-top: 7px; font: 400 .7rem var(--f-sans); color: var(--ink-soft); }
+        .hero-editorial { background: #e9dfd8; border: 1px solid #dfd2c9; padding: 20px 25px; position: relative; border-radius: 4px 4px 48px 4px; min-width: 0; }
+        .editorial-caption { display: flex; justify-content: space-between; gap: 10px; font: .53rem var(--f-mono); letter-spacing: .1em; color: #72605b; }
+        .editorial-caption > span:last-child { letter-spacing: 0; }
+        .hero-visual { height: clamp(265px,26vw,380px); display: block; overflow: visible; padding: 0; }
+        .hero-visual .hangtag { width: 43%; min-width: 0; top: 16%; animation: none; }
+        .hero-visual .hangtag.main { left: 28%; z-index: 3; transform: rotate(-7deg); }
+        .hero-visual .hangtag.left { left: 1%; top: 23%; z-index: 2; transform: rotate(-17deg) scale(.88); }
+        .hero-visual .hangtag.right { left: 56%; top: 20%; z-index: 1; transform: rotate(12deg) scale(.88); }
+        .hero-product { display: block; width: 100%; text-align: left; background: var(--paper); box-shadow: 0 12px 26px #33262a1a; transition: translate .25s var(--ease); }
+        .hero-product:hover { translate: 0 -8px; }
+        .hangtag .string { display: none; }
+        .hangtag .frame { padding: 6px 6px 0; box-shadow: none; border: 0; }
+        .hangtag .frame img { aspect-ratio: 1; object-fit: cover; }
+        .hangtag .plate { padding: 10px; }
+        .hangtag .eyelet { display: none; }
+        .hangtag .t-name { font-size: .63rem; }
+        .hangtag .t-price { font-size: .6rem; color: var(--accent); }
+        .editorial-foot { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #cdbdb3; padding-top: 13px; font: 1.4rem/1.1 var(--f-display); }
+        .editorial-foot em { color: var(--accent); }
+        .editorial-seal { display: flex; align-items: center; gap: 8px; font-size: 2rem; }
+        .editorial-seal > span { font: .45rem/1.5 var(--f-mono); letter-spacing: .1em; }
+        .strip { border-block: 1px solid var(--line); }
+        #etalase { padding-top: 58px; background: #fbf9f6; padding-bottom: 56px; border-top: 1px solid var(--line); }
+        #etalase .head { margin-bottom: 28px; }
+        .catalog-heading { display: flex; align-items: end; justify-content: space-between; gap: 36px; }
+        .catalog-heading h2 { margin-top: 12px; font-size: clamp(2.6rem,4.5vw,4rem); }
+        .catalog-heading p { max-width: 36ch; font-size: .84rem; line-height: 1.8; }
+        .toolbar { background: rgba(251,249,246,.97); margin-bottom: 0; border-top: 1px solid var(--line); }
+        .toolbar-in { flex-direction: column; gap: 14px; padding-block: 16px 12px; align-items: stretch; }
+        .tool-fields { order: -1; display: grid; grid-template-columns: minmax(180px,1fr) 180px 180px; gap: 10px; }
+        .search { grid-column: 1; grid-row: 1; width: auto; min-width: 0; }
+        .brand-field { grid-column: 2; grid-row: 1; width: auto; }
+        .sort-field { grid-column: 3; grid-row: 1; width: auto; }
+        .search input, .select select { height: 48px; border-color: var(--line); background: #fff; border-radius: 4px; font-size: .83rem; }
+        .search input { padding-left: 40px; }
+        .search svg { left: 14px; width: 17px; height: 17px; }
+        .tabs { gap: 8px; flex: auto; min-width: 0; }
+        .tab { border: 1px solid var(--line); border-radius: 30px; padding: 9px 18px; min-height: 40px; font: .75rem var(--f-sans); letter-spacing: 0; text-transform: none; }
+        .tab.is-active { border-color: var(--deep); background: var(--deep); }
+        .tab:not(.is-active):hover { background: var(--tint); border-color: var(--line-strong); }
+        .catalog-summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 20px; }
+        .catalog-status { padding: 0; min-height: 0; font-size: .78rem; color: var(--ink); }
+        .catalog-hint { color: var(--ink-soft); font-size: .7rem; }
+        .active-filters { display: flex; gap: 8px; flex-wrap: wrap; padding-bottom: 20px; }
+        .active-filters[hidden] { display: none; }
+        .active-filters button { background: var(--tint); border-radius: 3px; font-size: .75rem; min-height: 36px; padding: 6px 12px; }
+        .active-filters button span { margin-left: 8px; }
+        .active-filters .clear-all { background: transparent; text-decoration: underline; color: var(--ink-soft); }
+        .cat-block { margin-bottom: 36px; }
+        .cat-head { gap: 16px; margin-bottom: 18px; }
+        .cat-head h3 { font-size: 1.7rem; }
+        .cat-head .count { font-size: .6rem; }
+        .grid { gap: 24px 20px; }
+        .card { background: #fff; border: 1px solid #e8e1dc; padding: 7px; border-radius: 6px; transition: border-color .2s, box-shadow .2s; }
+        .card:hover { border-color: #c8b5ad; box-shadow: 0 8px 28px #33262a09; }
+        .card-media { border-radius: 3px; aspect-ratio: 1; }
+        .card:hover .card-media { box-shadow: none; }
+        .card-body { padding: 14px 8px 8px; gap: 7px; }
+        .card-brand { font-size: .6rem; color: #82736c; }
+        .card-name { font-size: .9rem; font-weight: 500; line-height: 1.5; }
+        .card-price-row { gap: 5px 10px; }
+        .card-price-selling { font-family: var(--f-sans); font-size: .95rem; color: var(--ink); font-weight: 600; }
+        .card-price-original { font-size: .65rem; }
+        .card-size { font-size: .72rem; min-height: 20px; }
+        .card-cta { background: #f5eeea; border: 1px solid #eadfd8; color: var(--deep); display: flex; justify-content: space-between; align-items: center; min-height: 42px; padding: 10px 12px; margin-top: auto; font-size: .65rem; }
+        .card-body .card-cta { margin-top: 8px; }
+        .flag { z-index: 1; font-size: .56rem; }
+        .empty { background: #f2eae4; border: 1px solid var(--line); border-radius: 6px; margin: 8px 0 32px; }
+        .service-section { padding-top: 64px; padding-bottom: 0; }
+        .promises { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; border-bottom: 1px solid var(--line); padding-bottom: 44px; }
+        .promise { border: 0; padding: 0; }
+        .promise h4 { font-size: 1.2rem; }
+        .promise p { font-size: .78rem; }
+        .promise .num { margin-bottom: 12px; }
+        .promise-btn { min-height: 34px; font-size: .55rem; padding: 8px 10px; }
+        #caraKerja { padding-top: 70px; padding-bottom: 70px; }
+        .steps { gap: 24px; }
+        .step { background: #eee6df; border-top: 0; border-radius: 4px; padding: 24px; }
+        .step .n { color: var(--accent); }
+        .step h4 { font-size: 1.7rem; margin-block: 25px 12px; }
+        .step p { font-size: .83rem; }
+        .faq-section { display: grid; grid-template-columns: .8fr 1.2fr; gap: 80px; border-top: 1px solid var(--line); padding-block: 64px 80px; }
+        .faq-intro h2 { font: 400 3.8rem/1.03 var(--f-display); margin: 18px 0; }
+        .faq-intro h2 em { color: var(--accent); }
+        .faq-intro p { font-size: .85rem; color: var(--ink-soft); }
+        .text-link { display: inline-block; font-size: .8rem; border-bottom: 1px solid var(--line-strong); padding-block: 10px; }
+        .faq-list details { border-bottom: 1px solid var(--line-strong); }
+        .faq-list summary { display: flex; justify-content: space-between; align-items: center; gap: 20px; list-style: none; cursor: pointer; padding: 23px 0; font-size: .9rem; }
+        .faq-list summary::-webkit-details-marker { display: none; }
+        .faq-list summary span { font-size: 1.4rem; color: var(--accent); transition: rotate .2s; }
+        .faq-list details[open] summary span { rotate: 45deg; }
+        .faq-list details p { font-size: .83rem; line-height: 1.85; color: var(--ink-soft); padding: 0 30px 24px 0; }
+        .cta { padding-block: 65px; }
+        .cta h3 { max-width: 20ch; margin-inline: auto; }
+        .qv-panel { border-radius: 8px; }
+        .qv-body { padding: 44px 32px 28px; }
+        .qv-name { font-size: 2.3rem; line-height: 1.15; }
+        .qv-price-note { font-size: .7rem; color: var(--ink-soft); margin-top: 10px; }
+        .qv-close { background: white; border: 1px solid var(--line); border-radius: 50%; top: 12px; right: 12px; }
+        .qv-actions .btn { width: 100%; }
+        .mobile-dock { display: none; }
+        .skip-link:not(:focus) { visibility: hidden; }
+        @media (max-width:1080px) { .hero-actions { flex-direction: column; align-items: start; } .hero-editorial { padding-inline: 18px; } .navlinks { gap: 14px; } }
+        @media (max-width:900px) {
+            :root { --header-h: 68px; }
+            .masthead .wrap { grid-template-columns: 1fr auto; }
+            .wordmark { font-size: 1.55rem; }
+            .hero-grid { grid-template-columns: 1fr 1fr; gap: 26px; }
+            .hero { padding-block: 36px 40px; }
+            .hero h1 { font-size: clamp(2.7rem,5.5vw,4rem); }
+            .hero-kicker { font-size: .5rem; }
+            .hero .lede { font-size: .84rem; }
+            .hero-visual .hangtag { position: absolute; flex: none; min-width: 0; width: 43%; }
+            .hero-visual .hangtag.main { transform: rotate(-7deg) !important; }
+            .hero-visual .hangtag.left { transform: rotate(-17deg) scale(.88) !important; }
+            .hero-visual .hangtag.right { transform: rotate(12deg) scale(.88) !important; }
+            .hero-visual { height: 260px; }
+            .hero-reassurance { gap: 10px; }
+            .hero-reassurance b { font-size: .6rem; }
+            .editorial-caption > span:last-child { display: none; }
+            .tool-fields { grid-template-columns: 1fr 155px 155px; }
+            .promises { grid-template-columns: repeat(2,1fr); gap: 28px; }
+            .steps { grid-template-columns: repeat(3,1fr); gap: 14px; }
+            .step { padding: 20px; }
+            .step h4 { font-size: 1.4rem; }
+            .faq-section { gap: 40px; }
+        }
+        @media (max-width:660px) {
+            :root { --gut: 20px; --header-h: 64px; }
+            body { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
+            .ticker { font-size: .5rem; letter-spacing: .06em; padding: 7px 12px; }
+            .hero { padding-top: 28px; padding-bottom: 28px; }
+            .hero-grid { grid-template-columns: 1fr; gap: 28px; }
+            .hero-kicker { font-size: .54rem; }
+            .hero h1 { font-size: clamp(2.9rem,10.5vw,4.2rem); margin-top: 20px; }
+            .hero .lede { font-size: .87rem; max-width: 42ch; margin-top: 18px; }
+            .hero-actions { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 4px 10px; margin-top: 22px; }
+            .hero-actions .btn { font-size: .63rem; padding-inline: 16px; }
+            .hero-actions .btn--line { font-size: .75rem; padding-inline: 0; }
+            .hero-reassurance { margin-top: 22px; padding-top: 14px; justify-content: space-between; }
+            .hero-reassurance > span { font-size: .55rem; }
+            .hero-reassurance b { font-size: .63rem; }
+            .hero-editorial { padding: 16px 18px; border-radius: 4px 4px 32px 4px; }
+            .hero-visual { height: clamp(220px,65vw,300px); }
+            .hero-visual .hangtag { top: 12%; width: 40%; }
+            .hero-visual .hangtag.main { left: 30%; }
+            .hero-visual .hangtag.left { top: 18%; left: 3%; }
+            .hero-visual .hangtag.right { top: 16%; left: 57%; }
+            .editorial-caption > span:last-child { display: block; font-size: .44rem; }
+            .editorial-foot { font-size: 1.25rem; }
+            .strip { display: none; }
+            #etalase { padding-top: 36px; padding-bottom: 24px; }
+            .catalog-heading { display: block; }
+            .catalog-heading h2 { font-size: 2.7rem; margin-top: 10px; }
+            .catalog-heading p { font-size: .8rem; margin-top: 14px; max-width: 38ch; }
+            #etalase .head { margin-bottom: 22px; }
+            .toolbar-in { gap: 12px; padding-top: 12px; }
+            .tool-fields { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .search { grid-column: 1 / -1; grid-row: 1; }
+            .brand-field { grid-column: 1; grid-row: 2; }
+            .sort-field { grid-column: 2; grid-row: 2; }
+            .search input, .select select { height: 44px; font-size: 16px; }
+            .select select { font-size: 16px; }
+            .tab { min-height: 38px; padding: 8px 16px; font-size: .72rem; }
+            .catalog-summary { display: block; padding-block: 16px; }
+            .catalog-status { font-size: .76rem; }
+            .catalog-hint { font-size: .61rem; display: block; margin-top: 4px; }
+            .grid { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px 10px; }
+            .card { padding: 5px; }
+            .card-body { padding: 10px 5px 5px; gap: 5px; }
+            .card-name { font-size: .78rem; line-height: 1.45; }
+            .card-brand { font-size: .52rem; letter-spacing: .08em; }
+            .card-price-selling { font-size: .82rem; }
+            .card-price-original { font-size: .58rem; }
+            .card-size { font-size: .65rem; }
+            .card-cta { font-size: .59rem; min-height: 40px; padding-inline: 9px; }
+            .cat-head { margin-bottom: 14px; }
+            .cat-head h3 { font-size: 1.5rem; }
+            .cat-head .count { font-size: .55rem; }
+            .cat-block { margin-bottom: 28px; }
+            .service-section { padding-top: 36px; }
+            .promises { gap: 24px 20px; padding-bottom: 32px; }
+            .promise h4 { font-size: 1.15rem; }
+            .promise p { font-size: .73rem; }
+            .promise .num { margin-bottom: 8px; }
+            .promise-btn { letter-spacing: .02em; }
+            #caraKerja { padding-block: 40px; }
+            #caraKerja .head h2 { font-size: 2.4rem; }
+            .steps { grid-template-columns: 1fr; gap: 10px; }
+            .step { padding: 20px 22px; }
+            .step h4 { margin-top: 10px; font-size: 1.6rem; }
+            .faq-section { grid-template-columns: 1fr; gap: 18px; padding-block: 40px 48px; }
+            .faq-intro h2 { font-size: 2.8rem; }
+            .faq-intro h2 br { display: none; }
+            .faq-list summary { font-size: .83rem; padding-block: 20px; }
+            .cta { padding-block: 44px; }
+            .cta h3 { font-size: 2.1rem; }
+            footer { padding-bottom: 30px; }
+            .fab { display: none; }
+            .mobile-dock { position: fixed; inset: auto 0 0; z-index: 65; display: grid; grid-template-columns: 1fr 1fr 1.25fr; gap: 8px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #fbf9f6f5; backdrop-filter: blur(12px); }
+            .mobile-dock a { display: flex; justify-content: center; align-items: center; gap: 7px; min-height: 44px; font-size: .72rem; border-radius: 3px; }
+            .mobile-dock a:last-child { background: var(--deep); color: white; }
+            .mobile-dock a > span { font-size: 1rem; }
+            body:has(.drawer.is-open) .mobile-dock { visibility: hidden; }
+            .qv { padding: 12px; }
+            .qv-panel { max-height: calc(100dvh - 24px); border-radius: 8px; }
+            .qv-stage { max-height: 38dvh; }
+            .qv-stage img { height: 100%; max-height: 38dvh; object-fit: contain; }
+            .qv-body { padding: 24px 22px; }
+            .qv-name { font-size: 1.9rem; }
+            .qv-actions { position: sticky; bottom: -24px; background: white; padding-block: 14px 10px; margin-inline: -4px; }
+        }
     </style>
 </head>
 <body>
@@ -1721,9 +1963,9 @@
     <header class="masthead" id="masthead">
         <div class="wrap">
             <nav class="navlinks">
-                <a href="#etalase">Catalog</a>
+                <a href="#etalase">Etalase</a>
                 <a href="#caraKerja">Cara titip</a>
-                <a href="#testimoni">Testimoni</a>
+                <a href="#faq">Tanya jawab</a>
             </nav>
             <a href="#top" class="wordmark">Jastip Premium<span class="dot">.</span></a>
             <div class="head-right">
@@ -1739,9 +1981,9 @@
     </header>
 
     <div class="drawer" id="drawer" aria-hidden="true" inert>
-        <a href="#etalase" data-close>Catalog <span class="idx">01</span></a>
+        <a href="#etalase" data-close>Etalase <span class="idx">01</span></a>
         <a href="#caraKerja" data-close>Cara titip <span class="idx">02</span></a>
-        <a href="#testimoni" data-close>Testimoni <span class="idx">03</span></a>
+        <a href="#faq" data-close>Tanya jawab <span class="idx">03</span></a>
         <a class="btn btn--solid" data-wa data-close href="#">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z"/></svg>
             Chat admin
@@ -1752,15 +1994,20 @@
     <section class="hero wrap" id="top">
         <div class="hero-grid">
             <div>
-                <span class="eyebrow">Jakarta Premium Outlet · Alam Sutera</span>
-                <h1>Kami yang <em>antre</em> di JPO, kamu yang pakai.</h1>
-                <p class="lede">Kami buka titipan untuk <strong>barang apa pun di Jakarta Premium Outlet</strong> — tenant mana pun, dari sepatu, baju, tas, sampai parfum. Pilih dari etalase, atau kirim barang incaranmu ke admin.</p>
+                <span class="hero-kicker"><span></span> Personal shopping · Jakarta Premium Outlet</span>
+                <h1>Incar barangnya.<br>Kami yang <em>belanja.</em></h1>
+                <p class="lede">Temukan pilihan dari Jakarta Premium Outlet, tanpa perlu ke sana. Dari barang di etalase sampai incaranmu sendiri — kami bantu titipkan.</p>
                 <div class="hero-actions">
-                    <a href="#etalase" class="btn btn--solid">Lihat etalase</a>
-                    <a class="btn btn--line" data-wa href="#">Titip barang dari JPO</a>
+                    <a href="#etalase" class="btn btn--solid">Jelajahi etalase <span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></a>
+                    <a class="btn btn--line" data-wa href="#">Punya barang incaran?</a>
                 </div>
+                <div class="hero-reassurance"><span>01 <b>Langsung dari store</b></span><span>02 <b>Fee titip termasuk</b></span><span>03 <b>Kirim se-Indonesia</b></span></div>
             </div>
-            <div class="hero-visual" id="heroVisual"></div>
+            <div class="hero-editorial">
+                <div class="editorial-caption"><span>THE OUTLET EDIT</span><span>Dipilih di JPO, untuk kamu <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></div>
+                <div class="hero-visual" id="heroVisual"></div>
+                <div class="editorial-foot"><span>Barang pilihan.<br><em>Tanpa perjalanan.</em></span><span class="editorial-seal">JP<span>PERSONAL<br>SHOPPING</span></span></div>
+            </div>
         </div>
     </section>
 
@@ -1769,42 +2016,11 @@
         <div class="strip-track" id="brandTrack"></div>
     </div>
 
-    <!-- ===================== PROMISES ===================== -->
-    <section class="wrap band--tight">
-        <div class="promises reveal">
-            <div class="promise">
-                <span class="num">01</span>
-                <h4>Semua tenant JPO</h4>
-                <p>Tidak terbatas etalase ini. Sebut brand dan barangnya, selama tenantnya ada di Jakarta Premium Outlet, kami belikan.</p>
-                <a class="btn btn--sm btn--line promise-btn" href="https://www.premiumoutlets.co.id/stores/" target="_blank" rel="noopener">Lihat daftar tenant
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
-                </a>
-            </div>
-            <div class="promise">
-                <span class="num">02</span>
-                <h4>Beli langsung di store</h4>
-                <p>Barang kami ambil sendiri dari tokonya, bukan dari reseller.</p>
-            </div>
-            <div class="promise">
-                <span class="num">03</span>
-                <h4>Harga apa adanya</h4>
-                <p>Harga di etalase sudah termasuk fee titip. Terdapat biaya ongkos kirim.</p>
-            </div>
-            <div class="promise">
-                <span class="num">04</span>
-                <h4>Kirim ke seluruh Indonesia</h4>
-                <p>Berangkat dari Alam Sutera, dikemas rapi, nomor resi dikirim di hari yang sama.</p>
-            </div>
-        </div>
-    </section>
-
     <!-- ===================== ETALASE (FULL ENGLISH) ===================== -->
     <section id="etalase">
         <div class="wrap">
             <div class="head reveal">
-                <span class="eyebrow">Catalog</span>
-                <h2>Titipan <em>minggu ini</em></h2>
-                <p>Barang yang sedang kami pegang dari JPO. Ketuk untuk melihat detailnya, lalu pesan lewat WhatsApp — di luar daftar ini pun bisa dititipkan.</p>
+                <div class="catalog-heading"><div><span class="eyebrow">THE CATALOG / PILIHAN DARI JPO</span><h2>Temukan <em>incaranmu.</em></h2></div><p>Lihat detailnya. Cocok? Admin bantu cek stok dan proses titipanmu lewat WhatsApp.</p></div>
             </div>
         </div>
 
@@ -1813,29 +2029,30 @@
                 <div class="toolbar-in">
                     <div class="tabs" id="tabs" role="group" aria-label="Filter kategori"></div>
                     <div class="tool-fields">
-                        <div class="select">
-                            <select id="brandSelect" aria-label="Filter brand">
+                        <div class="select brand-field">
+                            <select id="brandSelect" disabled aria-label="Filter brand">
                                 <option value="all">Semua merek</option>
                             </select>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
                         </div>
                         <div class="search">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-                            <input type="search" id="searchInput" placeholder="Cari nama, merek, atau ukuran" aria-label="Cari nama, merek, atau ukuran">
+                            <input type="search" id="searchInput" disabled placeholder="Cari barang, merek, ukuran…" aria-label="Cari nama, merek, atau ukuran">
                         </div>
+                        <div class="select sort-field"><select id="sortSelect" disabled aria-label="Urutkan barang"><option value="newest">Paling baru</option><option value="price-asc">Harga terendah</option><option value="price-desc">Harga tertinggi</option><option value="name">Nama A–Z</option></select><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="wrap">
-            <p id="catalogStatus" class="catalog-status" role="status" aria-live="polite" aria-atomic="true">Memuat katalog…</p>
+            <div class="catalog-summary"><p id="catalogStatus" class="catalog-status" role="status" aria-live="polite" aria-atomic="true">Memuat katalog…</p><span class="catalog-hint">Harga sudah termasuk fee titip · Belum termasuk ongkir</span></div><div id="activeFilters" class="active-filters" aria-label="Filter aktif" hidden></div>
             <div id="etalaseLoading" aria-hidden="true"></div>
 
             <div id="etalaseError" role="alert" class="empty" style="display:none">
                 <h4>Katalog belum bisa dimuat</h4>
                 <p id="etalaseErrorMsg">Periksa koneksi internet, lalu coba lagi.</p>
-                <button class="btn btn--line" id="etalaseRetry">Coba lagi</button>
+                <div class="empty-actions"><button class="btn btn--line" id="etalaseRetry">Coba lagi</button><a class="btn btn--solid" data-wa href="#">Tanya katalog ke admin <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></a></div>
             </div>
 
             <div id="etalaseContainer"></div>
@@ -1871,6 +2088,35 @@
         </div>
     </section>
 
+    <!-- ===================== PROMISES ===================== -->
+    <section class="wrap band--tight service-section">
+        <div class="promises reveal">
+            <div class="promise">
+                <span class="num">01</span>
+                <h4>Semua tenant JPO</h4>
+                <p>Tidak terbatas etalase ini. Sebut brand dan barangnya, selama tenantnya ada di Jakarta Premium Outlet, kami belikan.</p>
+                <a class="btn btn--sm btn--line promise-btn" href="https://www.premiumoutlets.co.id/stores/" target="_blank" rel="noopener">Lihat daftar tenant
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+                </a>
+            </div>
+            <div class="promise">
+                <span class="num">02</span>
+                <h4>Beli langsung di store</h4>
+                <p>Barang kami ambil sendiri dari tokonya, bukan dari reseller.</p>
+            </div>
+            <div class="promise">
+                <span class="num">03</span>
+                <h4>Harga apa adanya</h4>
+                <p>Harga di etalase sudah termasuk fee titip. Terdapat biaya ongkos kirim.</p>
+            </div>
+            <div class="promise">
+                <span class="num">04</span>
+                <h4>Kirim ke seluruh Indonesia</h4>
+                <p>Dikemas rapi dari Alam Sutera. Detail pengiriman dan resi dikabarkan lewat WhatsApp.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- ===================== CARA KERJA ===================== -->
     <section class="wrap band" id="caraKerja">
         <div class="head reveal">
@@ -1896,6 +2142,16 @@
         </div>
     </section>
 
+    <section class="faq-section wrap band" id="faq">
+        <div class="faq-intro"><span class="eyebrow">SEBELUM TITIP</span><h2>Biar makin<br><em>yakin.</em></h2><p>Baru pertama kali titip? Mulai dari sini.</p><a data-wa class="text-link" href="#">Tanya langsung ke admin <svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></a></div>
+        <div class="faq-list">
+            <details><summary>Bisa titip barang di luar etalase?<span aria-hidden="true">+</span></summary><p>Bisa. Kirim foto, nama barang, dan mereknya ke admin. Selama tokonya ada di Jakarta Premium Outlet, kami bantu cek ketersediaan dan harganya.</p></details>
+            <details><summary>Harga sudah termasuk apa saja?<span aria-hidden="true">+</span></summary><p>Harga etalase sudah termasuk fee titip. Ongkos kirim dihitung terpisah. Admin akan mengonfirmasi total biaya sebelum pembayaran.</p></details>
+            <details><summary>Bagaimana memastikan ukuran dan stok?<span aria-hidden="true">+</span></summary><p>Buka detail barang, lalu kirim pesan lewat WhatsApp. Sampaikan ukuran atau varian yang kamu mau. Admin akan mengonfirmasi stok sebelum kamu membayar.</p></details>
+            <details><summary>Barang dikirim dari mana?<span aria-hidden="true">+</span></summary><p>Barang dikemas dan dikirim dari Alam Sutera, Tangerang Selatan. Detail pengiriman dan nomor resi disampaikan lewat WhatsApp.</p></details>
+        </div>
+    </section>
+
     <!-- ===================== CTA ===================== -->
     <section class="cta">
         <div class="wrap">
@@ -1916,12 +2172,6 @@
                     <span class="wordmark">Jastip Premium<span class="dot">.</span></span>
                     <p>Jasa titip untuk semua tenant Jakarta Premium Outlet. Kami yang belanja dan antre, kamu tinggal terima paketnya.</p>
                     <div class="foot-social">
-                        <a href="#" aria-label="Instagram" target="_blank" rel="noopener">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r=".6" fill="currentColor" /></svg>
-                        </a>
-                        <a href="#" aria-label="TikTok" target="_blank" rel="noopener">
-                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.8a4.3 4.3 0 0 1-3-3.8h-3v13.6a2.7 2.7 0 1 1-2-2.6V9.7a5.7 5.7 0 1 0 5 5.6V9.1a7.3 7.3 0 0 0 4 1.2V7.3a4.3 4.3 0 0 1-1-1.5z" /></svg>
-                        </a>
                         <a data-wa href="#" aria-label="WhatsApp" target="_blank" rel="noopener">
                             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z" /></svg>
                         </a>
@@ -1931,9 +2181,9 @@
                 <div>
                     <h5>Halaman</h5>
                     <ul class="foot-list">
-                        <li><a href="#etalase">Catalog</a></li>
+                        <li><a href="#etalase">Etalase</a></li>
                         <li><a href="#caraKerja">Cara titip</a></li>
-                        <li><a href="#testimoni">Testimoni</a></li>
+                        <li><a href="#faq">Tanya jawab</a></li>
                     </ul>
                 </div>
 
@@ -1976,6 +2226,8 @@
         Chat admin
     </a>
 
+    <nav class="mobile-dock" aria-label="Navigasi cepat"><a href="#etalase"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>Etalase</a><a href="#caraKerja"><span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span>Cara titip</a><a data-wa href="#"><span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span>Chat admin</a></nav>
+
     <!-- ===================== QUICK VIEW ===================== -->
     <div class="qv" id="quickView" aria-hidden="true" inert role="dialog" aria-modal="true" aria-labelledby="qvName">
         <div class="qv-panel">
@@ -1998,7 +2250,7 @@
                     <span class="qv-price-original" id="qvPriceOriginal"></span>
                     <span class="qv-price-selling" id="qvPriceSelling"></span>
                 </div>
-                <dl class="qv-meta">
+                <p class="qv-price-note">Termasuk fee titip · Ongkir dihitung terpisah</p><dl class="qv-meta">
                     <div class="qv-row"><dt>Status</dt><dd><span class="qv-stock" id="qvStock"></span></dd></div>
                     <div class="qv-row" id="qvSizeRow"><dt>Varian</dt><dd id="qvSize"></dd></div>
                     <!-- Diskon row: hanya persentase, tanpa nominal -->
@@ -2010,7 +2262,7 @@
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 6.3A8.8 8.8 0 0 0 4 17l-1 4 4-1a8.8 8.8 0 0 0 13.2-7.6 8.7 8.7 0 0 0-2.6-6zM12 19.5a7.4 7.4 0 0 1-3.8-1l-.3-.2-2.8.7.8-2.7-.2-.3A7.5 7.5 0 1 1 19.5 12 7.5 7.5 0 0 1 12 19.5z" /></svg>
                         Pesan lewat WhatsApp
                     </button>
-                    <p class="qv-note">Detail barang otomatis terisi di pesanmu.</p>
+                    <p class="qv-note">Detail barang otomatis terisi. Konfirmasi stok dulu, baru bayar.</p>
                 </div>
             </div>
         </div>
@@ -2034,9 +2286,9 @@
                 waGreeting: "Halo kak, aku mau titip beli barang dari Jakarta Premium Outlet. Boleh dibantu?",
                 cacheKey: "jastippremium_v2",
                 cacheTtl: 5 * 60 * 1000,
-                fetchRetry: 2,
+                fetchRetry: 1,
                 fetchDelay: 1500,
-                fetchTimeout: 12000,
+                fetchTimeout: 8000,
                 statusTersembunyi: ["sembunyi"],
                 jumlahHero: 3,
                 minBrandStrip: 4,
@@ -2066,6 +2318,7 @@
                ============================================================ */
             var produk = [];
             var filter = { kategori: "all", brand: "all", cari: "" };
+            var urutanProduk = "newest";
 
             var galeri = { daftar: [], indeks: 0 };
             var testi = { slides: [], aktif: 0, timer: null, sentuhX: 0 };
@@ -2311,16 +2564,16 @@
                    produk ini tidak diunduh dua kali saat etalase discroll. */
                 var posisi = ["main", "left", "right"];
                 el.heroVisual.innerHTML = pilihan.map(function (p, i) {
-                    return '<figure class="hangtag ' + posisi[i] + '">' +
+                    return '<figure class="hangtag ' + posisi[i] + '"><button class="hero-product" type="button" data-hero="' + i + '" aria-label="Lihat detail ' + esc(p.nama) + '">' +
                         '<span class="string"></span>' +
                         '<div class="frame"><img ' +
                         atributFoto(p.gambar, 400, [280, 400, 600], "(min-width:900px) 300px, 40vw") +
                         ' alt="' + esc(p.nama) + '" fetchpriority="' + (i === 0 ? "high" : "low") +
                         '" decoding="async"></div>' +
-                        '<figcaption class="plate"><span class="eyelet"></span><span class="plate-txt">' +
+                        '<span class="plate"><span class="eyelet"></span><span class="plate-txt">' +
                         '<span class="t-name">' + esc(p.nama || "Produk") + '</span>' +
                         '<span class="t-price">' + esc(labelHarga(p)) + '</span>' +
-                        '</span></figcaption></figure>';
+                        '</span></span></button></figure>';
                 }).join("");
             }
 
@@ -2362,8 +2615,8 @@
                     (coret ? '<span class="card-price-original">' + esc(coret) + '</span>' : '') +
                     '<span class="card-price-selling">' + esc(labelHarga(p)) + '</span>' +
                     '</div>' +
-                    (p.ukuran ? '<span class="card-size">' + esc(p.ukuran) + '</span>' : '') +
-                    '<button class="card-cta" data-order="' + idx + '">Pesan</button>' +
+                    '<span class="card-size">' + (p.ukuran ? 'Varian: ' + esc(p.ukuran) : 'Tanya varian ke admin') + '</span>'  +
+                    '<button class="card-cta" data-order="' + idx + '">Titip ini <span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></span></button>' +
                     '</div></article>';
             }
 
@@ -2398,8 +2651,20 @@
 
             function renderProducts(daftar) {
                 var urutan = [], grup = {};
-                daftar.forEach(function (p, i) {
-                    var cat = (p.kategori || "lainnya").toLowerCase().trim();
+                var indeks = daftar.map(function (p, i) { return i; });
+                indeks.sort(function (a, b) {
+                    var x = daftar[a], y = daftar[b];
+                    if (urutanProduk === "name") return x.nama.localeCompare(y.nama, "id");
+                    if (urutanProduk === "price-asc" || urutanProduk === "price-desc") {
+                        if (!x.hargaJual) return y.hargaJual ? 1 : a - b;
+                        if (!y.hargaJual) return -1;
+                        return urutanProduk === "price-asc" ? x.hargaJual - y.hargaJual : y.hargaJual - x.hargaJual;
+                    }
+                    return a - b;
+                });
+                indeks.forEach(function (i) {
+                    var p = daftar[i];
+                    var cat = urutanProduk === "newest" ? (p.kategori || "lainnya").toLowerCase().trim() : "pilihan";
                     if (!grup[cat]) { grup[cat] = []; urutan.push(cat); }
                     grup[cat].push(i);
                 });
@@ -2418,29 +2683,45 @@
                ============================================================ */
             function terapkanFilter() {
                 var q = filter.cari.toLowerCase().trim();
+                var kata = q.split(/\s+/).filter(Boolean);
                 var totalTampil = 0;
 
                 el.etalaseContainer.querySelectorAll(".cat-block").forEach(function (blok) {
-                    var cocokKategori = filter.kategori === "all" || blok.dataset.category === filter.kategori;
+
                     var tampil = 0;
 
                     blok.querySelectorAll(".card").forEach(function (kartu) {
                         var p = produk[parseInt(kartu.dataset.idx, 10)];
                         var teks = (p.nama + " " + p.brand + " " + p.kategori + " " + p.ukuran).toLowerCase();
+                        var cocokKategori = filter.kategori === "all" || p.kategori.toLowerCase().trim() === filter.kategori;
                         var cocokBrand = filter.brand === "all" || p.brand.toLowerCase().trim() === filter.brand;
-                        var cocok = cocokKategori && cocokBrand && (!q || teks.indexOf(q) !== -1);
+                        var cocok = cocokKategori && cocokBrand && kata.every(function (k) { return teks.indexOf(k) !== -1; });
                         kartu.style.display = cocok ? "" : "none";
                         if (cocok) tampil++;
                     });
 
                     blok.style.display = tampil ? "" : "none";
                     var hitung = blok.querySelector(".count");
-                    if (hitung) hitung.textContent = tampil + " items";
+                    if (hitung) hitung.textContent = tampil + " barang";
                     totalTampil += tampil;
                 });
 
                 el.noResult.style.display = totalTampil ? "none" : "";
+                el.noResult.querySelector("h4").textContent = produk.length ? "Belum ada barang yang cocok" : "Etalase sedang diperbarui";
+                el.noResult.querySelector("p").textContent = produk.length ? "Coba kata kunci lain atau hapus filter. Belum ketemu? Kirim barang incaranmu ke admin." : "Kamu tetap bisa titip. Kirim foto atau nama barang incaranmu, lalu admin bantu cek di JPO.";
+                el.resetFilters.hidden = !produk.length;
+                renderFilterAktif();
                 document.getElementById("catalogStatus").textContent = totalTampil + " barang" + (q ? " untuk “" + filter.cari.trim() + "”" : "") + (filter.brand !== "all" || filter.kategori !== "all" ? " sesuai filter" : " tersedia");
+            }
+
+            function renderFilterAktif() {
+                var chips = [];
+                if (filter.kategori !== "all") chips.push({ key: "kategori", label: titleCase(filter.kategori) });
+                if (filter.brand !== "all") chips.push({ key: "brand", label: titleCase(filter.brand) });
+                if (filter.cari.trim()) chips.push({ key: "cari", label: "“" + filter.cari.trim() + "”" });
+                var box = document.getElementById("activeFilters");
+                box.hidden = !chips.length;
+                box.innerHTML = chips.map(function (c) { return '<button type="button" data-clear="' + c.key + '" aria-label="Hapus filter ' + esc(c.label) + '">' + esc(c.label) + ' <span aria-hidden="true">×</span></button>'; }).join("") + (chips.length ? '<button class="clear-all" type="button" data-clear="all">Hapus semua</button>' : "");
             }
 
             function setFilter(kategori, brand, cari) {
@@ -2454,6 +2735,8 @@
                     t.setAttribute("aria-pressed", aktif ? "true" : "false");
                 });
                 renderBrandOptions();
+                el.searchInput.disabled = false;
+                document.getElementById("sortSelect").disabled = false;
                 terapkanFilter();
             }
 
@@ -2509,7 +2792,7 @@
                 var p = produk[idx];
                 if (!p) return;
 
-                fokusSebelumQV = el.etalaseContainer.querySelector('.card[data-idx="' + idx + '"]');
+                fokusSebelumQV = document.activeElement;
                 qvPasangGaleri(p);
 
                 el.qvBrand.textContent = p.brand ? p.brand + " — lihat semua" : "No brand";
@@ -2689,8 +2972,10 @@
             }
 
             function olahData(json) {
+                if (!json || typeof json !== "object") throw new Error("Format katalog tidak valid");
                 var baris = Array.isArray(json) ? json :
-                    (json.data || json.result || json.produk || json.products || []);
+                    (json.data || json.result || json.produk || json.products);
+
 
                 if (!Array.isArray(baris)) throw new Error("Format katalog tidak valid");
                 baris = baris.slice().reverse();
@@ -2785,6 +3070,9 @@
             }
 
             function initHeader() {
+                el.masthead.querySelector(".wordmark").addEventListener("click", function () {
+                    if (el.drawer.classList.contains("is-open")) bukaDrawer(false);
+                });
                 window.matchMedia("(min-width: 901px)").addEventListener("change", function (e) {
                     if (e.matches && el.drawer.classList.contains("is-open")) bukaDrawer(false);
                 });
@@ -2830,6 +3118,24 @@
             }
 
             function initEtalase() {
+                document.getElementById("sortSelect").addEventListener("change", function () {
+                    urutanProduk = this.value;
+                    renderProducts(produk);
+                    terapkanFilter();
+                });
+                document.getElementById("activeFilters").addEventListener("click", function (e) {
+                    var button = e.target.closest("[data-clear]");
+                    if (!button) return;
+                    var key = button.dataset.clear;
+                    setFilter(key === "all" || key === "kategori" ? "all" : filter.kategori,
+                        key === "all" || key === "brand" ? "all" : filter.brand,
+                        key === "all" || key === "cari" ? "" : filter.cari);
+                    el.searchInput.focus({ preventScroll: true });
+                });
+                el.heroVisual.addEventListener("click", function (e) {
+                    var button = e.target.closest("[data-hero]");
+                    if (button) bukaQuickView(Number(button.dataset.hero));
+                });
                 el.tabs.addEventListener("click", function (e) {
                     var tab = e.target.closest(".tab");
                     if (tab) setFilter(tab.dataset.filter, filter.brand, filter.cari);
@@ -2971,9 +3277,10 @@
                         if (zone) {
                             var controls = Array.from(zone.querySelectorAll('a[href], button:not(:disabled), input, select, [tabindex="0"]')).filter(function (n) { return !n.hidden && n.getClientRects().length; });
                             if (zone === el.drawer) controls.push(el.burger);
-                            var first = controls[0], last = controls[controls.length - 1];
-                            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-                            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+                            var current = controls.indexOf(document.activeElement);
+                            var next = e.shiftKey ? (current <= 0 ? controls.length - 1 : current - 1) : (current + 1) % controls.length;
+                            e.preventDefault();
+                            controls[next].focus();
                         }
                     }
                     if (e.key === "Escape") {
