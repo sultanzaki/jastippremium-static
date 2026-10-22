@@ -21,10 +21,12 @@
          untuk memulainya. Skrip utama di bawah tinggal memakai hasilnya. -->
     <script>
         window.JP_API = "https://script.google.com/macros/s/AKfycbzUM4wtt93EW7nuz9NyEW5ZsPNXVhUFxnULvgco2YlHlTXf12W_FwmKvmihEkXEseeu/exec";
-        window.JP_DATA_AWAL = fetch(window.JP_API).then(function (r) {
+        var initialController = new AbortController();
+        var initialTimeout = setTimeout(function () { initialController.abort(); }, 12000);
+        window.JP_DATA_AWAL = fetch(window.JP_API, { signal: initialController.signal }).then(function (r) {
             if (!r.ok) throw new Error("HTTP " + r.status);
             return r.json();
-        }).catch(function () { return null; });
+        }).catch(function () { return null; }).finally(function () { clearTimeout(initialTimeout); });
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 
@@ -1695,9 +1697,20 @@
                 transform: none;
             }
         }
+        html { scrollbar-gutter: stable; }
+        section[id] { scroll-margin-top: calc(var(--header-h) + 24px); }
+        .skip-link { position: fixed; top: 12px; left: 12px; z-index: 200; padding: 12px 18px; background: var(--deep); color: white; transform: translateY(-180%); }
+        .skip-link:focus { transform: none; }
+        .catalog-status { color: var(--ink-soft); font-size: .85rem; padding: 18px 0; min-height: 54px; }
+        .drawer { overflow-y: auto; overscroll-behavior: contain; }
+        .qv-panel { overscroll-behavior: contain; }
+        .qv-nav, .qv-close, .burger { min-width: 44px; min-height: 44px; }
+        button:disabled { cursor: wait; opacity: .65; }
+        @media (max-width: 660px) { .search input, .select select { font-size: 16px; } }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#etalase">Langsung ke katalog</a>
 
     <!-- ===================== ANNOUNCEMENT ===================== -->
     <div class="ticker">
@@ -1725,7 +1738,7 @@
         </div>
     </header>
 
-    <div class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer" id="drawer" aria-hidden="true" inert>
         <a href="#etalase" data-close>Catalog <span class="idx">01</span></a>
         <a href="#caraKerja" data-close>Cara titip <span class="idx">02</span></a>
         <a href="#testimoni" data-close>Testimoni <span class="idx">03</span></a>
@@ -1798,17 +1811,17 @@
         <div class="toolbar" id="toolbar">
             <div class="wrap">
                 <div class="toolbar-in">
-                    <div class="tabs" id="tabs" role="tablist" aria-label="Filter categories"></div>
+                    <div class="tabs" id="tabs" role="group" aria-label="Filter kategori"></div>
                     <div class="tool-fields">
                         <div class="select">
                             <select id="brandSelect" aria-label="Filter brand">
-                                <option value="all">All Brands</option>
+                                <option value="all">Semua merek</option>
                             </select>
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9" /></svg>
                         </div>
                         <div class="search">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-                            <input type="search" id="searchInput" placeholder="Search items" aria-label="Search items">
+                            <input type="search" id="searchInput" placeholder="Cari nama, merek, atau ukuran" aria-label="Cari nama, merek, atau ukuran">
                         </div>
                     </div>
                 </div>
@@ -1816,22 +1829,23 @@
         </div>
 
         <div class="wrap">
-            <div id="etalaseLoading"></div>
+            <p id="catalogStatus" class="catalog-status" role="status" aria-live="polite" aria-atomic="true">Memuat katalog…</p>
+            <div id="etalaseLoading" aria-hidden="true"></div>
 
-            <div id="etalaseError" class="empty" style="display:none">
-                <h4>Catalog couldn't load</h4>
-                <p id="etalaseErrorMsg">Check your internet connection and try again.</p>
-                <button class="btn btn--line" id="etalaseRetry">Reload</button>
+            <div id="etalaseError" role="alert" class="empty" style="display:none">
+                <h4>Katalog belum bisa dimuat</h4>
+                <p id="etalaseErrorMsg">Periksa koneksi internet, lalu coba lagi.</p>
+                <button class="btn btn--line" id="etalaseRetry">Coba lagi</button>
             </div>
 
             <div id="etalaseContainer"></div>
 
             <div id="noResult" class="empty" style="display:none">
-                <h4>No matches found</h4>
-                <p>This catalog only shows a small selection. Just tell us the brand and item — we'll check it at JPO for you.</p>
+                <h4>Belum ada barang yang cocok</h4>
+                <p>Coba kata kunci lain atau hapus filter. Belum ketemu? Kirim barang incaranmu ke admin.</p>
                 <div class="empty-actions">
-                    <button class="btn btn--line" id="resetFilters">Clear all filters</button>
-                    <a class="btn btn--solid" data-wa href="#">Order this item</a>
+                    <button class="btn btn--line" id="resetFilters">Hapus semua filter</button>
+                    <a class="btn btn--solid" data-wa href="#">Tanya admin</a>
                 </div>
             </div>
         </div>
@@ -1963,7 +1977,7 @@
     </a>
 
     <!-- ===================== QUICK VIEW ===================== -->
-    <div class="qv" id="quickView" role="dialog" aria-modal="true" aria-labelledby="qvName">
+    <div class="qv" id="quickView" aria-hidden="true" inert role="dialog" aria-modal="true" aria-labelledby="qvName">
         <div class="qv-panel">
             <button class="qv-close" id="qvClose" aria-label="Tutup detail barang">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -2057,6 +2071,7 @@
             var testi = { slides: [], aktif: 0, timer: null, sentuhX: 0 };
 
             var fokusSebelumQV = null;
+            var sedangMemuat = false;
             var hematGerak = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
             /* ============================================================
@@ -2334,12 +2349,12 @@
                 var coret = formatRupiah(p.hargaCoret);
 
                 return '<article class="card" tabindex="0" data-idx="' + idx + '" ' +
-                    'aria-label="View details for ' + esc(p.nama) + '">' +
+                    'aria-label="Lihat detail ' + esc(p.nama) + '">' +
                     '<div class="card-media">' + badge +
                     '<img ' + atributFoto(p.gambar, 400, [280, 400, 600],
                         "(min-width:1081px) 300px, (min-width:661px) 31vw, 46vw") +
                     ' alt="' + esc(p.nama) + '" loading="lazy" decoding="async">' +
-                    '<span class="veil">View details</span></div>' +
+                    '<span class="veil">Lihat detail</span></div>' +
                     '<div class="card-body">' +
                     '<span class="card-brand">' + esc(p.brand || "No brand") + '</span>' +
                     '<span class="card-name">' + esc(p.nama) + '</span>' +
@@ -2348,14 +2363,14 @@
                     '<span class="card-price-selling">' + esc(labelHarga(p)) + '</span>' +
                     '</div>' +
                     (p.ukuran ? '<span class="card-size">' + esc(p.ukuran) + '</span>' : '') +
-                    '<button class="card-cta" data-order="' + idx + '">Order</button>' +
+                    '<button class="card-cta" data-order="' + idx + '">Pesan</button>' +
                     '</div></article>';
             }
 
             function renderTabs(kategori) {
-                el.tabs.innerHTML = '<button class="tab is-active" role="tab" aria-selected="true" data-filter="all">All</button>' +
+                el.tabs.innerHTML = '<button class="tab is-active" aria-pressed="true" data-filter="all">Semua</button>' +
                     kategori.map(function (c) {
-                        return '<button class="tab" role="tab" aria-selected="false" data-filter="' + esc(c) + '">' +
+                        return '<button class="tab" aria-pressed="false" data-filter="' + esc(c) + '">' +
                             esc(titleCase(c)) + '</button>';
                     }).join("");
 
@@ -2372,7 +2387,7 @@
                 var masihAda = brands.some(function (b) { return b.toLowerCase() === filter.brand; });
                 if (filter.brand !== "all" && !masihAda) filter.brand = "all";
 
-                el.brandSelect.innerHTML = '<option value="all">All Brands</option>' +
+                el.brandSelect.innerHTML = '<option value="all">Semua merek</option>' +
                     brands.map(function (b) {
                         return '<option value="' + esc(b.toLowerCase()) + '">' + esc(b) + '</option>';
                     }).join("");
@@ -2425,6 +2440,7 @@
                 });
 
                 el.noResult.style.display = totalTampil ? "none" : "";
+                document.getElementById("catalogStatus").textContent = totalTampil + " barang" + (q ? " untuk “" + filter.cari.trim() + "”" : "") + (filter.brand !== "all" || filter.kategori !== "all" ? " sesuai filter" : " tersedia");
             }
 
             function setFilter(kategori, brand, cari) {
@@ -2435,7 +2451,7 @@
                 el.tabs.querySelectorAll(".tab").forEach(function (t) {
                     var aktif = t.dataset.filter === kategori;
                     t.classList.toggle("is-active", aktif);
-                    t.setAttribute("aria-selected", aktif ? "true" : "false");
+                    t.setAttribute("aria-pressed", aktif ? "true" : "false");
                 });
                 renderBrandOptions();
                 terapkanFilter();
@@ -2511,16 +2527,22 @@
                 el.qvDiscountRow.style.display = p.diskonPersen > 0 ? "" : "none";
                 el.qvDiscount.textContent = p.diskonPersen + "%";
 
-                el.qvStock.textContent = "Ready";
+                el.qvStock.textContent = "Konfirmasi stok ke admin";
                 el.qvBuy.dataset.order = idx;
 
+                el.quickView.inert = false;
+                el.quickView.setAttribute("aria-hidden", "false");
                 el.quickView.classList.add("is-open");
+                aturLatar(el.quickView, true);
                 document.body.style.overflow = "hidden";
                 el.qvClose.focus();
             }
 
             function tutupQuickView() {
                 el.quickView.classList.remove("is-open");
+                el.quickView.inert = true;
+                el.quickView.setAttribute("aria-hidden", "true");
+                aturLatar(el.quickView, false);
                 document.body.style.overflow = "";
                 if (fokusSebelumQV) fokusSebelumQV.focus();
             }
@@ -2536,7 +2558,7 @@
                     "",
                     "Masih ready kak?"
                 ].join("\n");
-                window.open(linkWA(pesan), "_blank");
+                window.open(linkWA(pesan), "_blank", "noopener,noreferrer");
             }
 
             /* ============================================================
@@ -2592,7 +2614,7 @@
             }
 
             function mulaiTestiOtomatis() {
-                if (hematGerak || testi.slides.length < 2) return;
+                if (hematGerak || document.hidden || el.testiStage.matches(":hover, :focus-within") || testi.slides.length < 2) return;
                 hentikanTestiOtomatis();
                 testi.timer = setInterval(function () { testiBerikut(true); }, CONFIG.jedaTestimoni);
             }
@@ -2670,6 +2692,7 @@
                 var baris = Array.isArray(json) ? json :
                     (json.data || json.result || json.produk || json.products || []);
 
+                if (!Array.isArray(baris)) throw new Error("Format katalog tidak valid");
                 baris = baris.slice().reverse();
 
                 produk = baris.map(bacaBaris).filter(bolehTampil);
@@ -2690,11 +2713,18 @@
             }
 
             async function muatEtalase() {
+                if (sedangMemuat) return;
                 var cache = bacaCache();
                 if (cache) {
                     try { olahData(cache); return; } catch (e) { /* cache rusak, ambil ulang */ }
                 }
 
+                sedangMemuat = true;
+                el.etalaseRetry.disabled = true;
+                el.etalaseContainer.setAttribute("aria-busy", "true");
+                document.getElementById("catalogStatus").textContent = "Memuat katalog…";
+                el.noResult.style.display = "none";
+                el.heroVisual.style.display = "";
                 tampilkanSkeleton();
                 el.etalaseError.style.display = "none";
                 el.etalaseContainer.innerHTML = "";
@@ -2706,31 +2736,58 @@
                     window.JP_DATA_AWAL = null;
                     if (!json) json = await ambilJSON(CONFIG.apiUrl);
                     if (json && json.error) throw new Error(json.error);
-                    simpanCache(json);
                     olahData(json);
+                    simpanCache(json);
                 } catch (err) {
                     console.error("Gagal memuat etalase:", err);
                     sembunyikanSkeleton();
                     el.heroVisual.style.display = "none";
                     el.etalaseError.style.display = "";
                     el.etalaseErrorMsg.textContent =
-                        "Gagal memuat data (" + err.message + "). Periksa koneksi, lalu muat ulang.";
+                        "Katalog belum dapat dihubungi. Coba lagi atau hubungi admin lewat WhatsApp.";
+                    document.getElementById("catalogStatus").textContent = "Katalog belum tersedia.";
+                } finally {
+                    sedangMemuat = false;
+                    el.etalaseRetry.disabled = false;
+                    el.etalaseContainer.setAttribute("aria-busy", "false");
                 }
             }
 
             /* ============================================================
                11. INIT — semua pemasangan event dikumpulkan di sini
                ============================================================ */
+            // Keep background controls out of the keyboard and accessibility tree.
+            function aturLatar(overlay, tutup) {
+                Array.from(document.body.children).forEach(function (node) {
+                    if (node === overlay || node.tagName === "SCRIPT" ||
+                        (overlay === el.drawer && node === el.masthead)) return;
+                    if (tutup) {
+                        node.dataset.overlayInert = node.inert ? "true" : "false";
+                        node.inert = true;
+                    } else if (node.dataset.overlayInert !== undefined) {
+                        node.inert = node.dataset.overlayInert === "true";
+                        delete node.dataset.overlayInert;
+                    }
+                });
+            }
+
             function bukaDrawer(buka) {
+                el.drawer.inert = !buka;
+                aturLatar(el.drawer, buka);
                 el.drawer.classList.toggle("is-open", buka);
                 el.burger.classList.toggle("is-open", buka);
                 el.burger.setAttribute("aria-expanded", buka ? "true" : "false");
                 el.burger.setAttribute("aria-label", buka ? "Tutup menu" : "Buka menu");
                 el.drawer.setAttribute("aria-hidden", buka ? "false" : "true");
                 document.body.style.overflow = buka ? "hidden" : "";
+                if (buka) el.drawer.querySelector("a").focus();
+                else el.burger.focus();
             }
 
             function initHeader() {
+                window.matchMedia("(min-width: 901px)").addEventListener("change", function (e) {
+                    if (e.matches && el.drawer.classList.contains("is-open")) bukaDrawer(false);
+                });
                 window.addEventListener("scroll", function () {
                     el.masthead.classList.toggle("is-stuck", window.scrollY > 8);
                 }, { passive: true });
@@ -2816,6 +2873,7 @@
 
                 el.etalaseContainer.addEventListener("keydown", function (e) {
                     if (e.key !== "Enter" && e.key !== " ") return;
+                    if (e.target.closest("button, a, input, select")) return;
                     var kartu = e.target.closest(".card");
                     if (!kartu) return;
                     e.preventDefault();
@@ -2863,6 +2921,11 @@
             }
 
             function initTestimoni() {
+                document.addEventListener("visibilitychange", function () {
+                    if (document.hidden) hentikanTestiOtomatis(); else mulaiTestiOtomatis();
+                });
+                el.testiStage.addEventListener("focusin", hentikanTestiOtomatis);
+                el.testiStage.addEventListener("focusout", function () { setTimeout(mulaiTestiOtomatis, 0); });
                 el.testiPrev.addEventListener("click", function () { testiBerikut(false); });
                 el.testiNext.addEventListener("click", function () { testiBerikut(true); });
                 el.testiDots.addEventListener("click", function (e) {
@@ -2883,16 +2946,18 @@
             /* Geser dengan jari, dipakai galeri quick view dan testimoni */
             function geserJari(target, ambang, aksi) {
                 if (!target) return;
-                var x0 = null;
+                var x0 = null, y0 = null;
                 target.addEventListener("touchstart", function (e) {
                     x0 = e.touches[0].clientX;
+                    y0 = e.touches[0].clientY;
                     if (aksi.mulai) aksi.mulai();
                 }, { passive: true });
+                target.addEventListener("touchcancel", function () { x0 = null; if (aksi.selesai) aksi.selesai(); }, { passive: true });
                 target.addEventListener("touchend", function (e) {
                     if (x0 === null) return;
                     var beda = e.changedTouches[0].clientX - x0;
                     x0 = null;
-                    if (Math.abs(beda) > ambang) aksi.geser(beda < 0);
+                    if (Math.abs(beda) > ambang && Math.abs(beda) > Math.abs(e.changedTouches[0].clientY - y0)) aksi.geser(beda < 0);
                     if (aksi.selesai) aksi.selesai();
                 }, { passive: true });
             }
@@ -2901,6 +2966,16 @@
                 document.addEventListener("keydown", function (e) {
                     var qvTerbuka = el.quickView.classList.contains("is-open");
 
+                    if (e.key === "Tab") {
+                        var zone = qvTerbuka ? el.quickView : el.drawer.classList.contains("is-open") ? el.drawer : null;
+                        if (zone) {
+                            var controls = Array.from(zone.querySelectorAll('a[href], button:not(:disabled), input, select, [tabindex="0"]')).filter(function (n) { return !n.hidden && n.getClientRects().length; });
+                            if (zone === el.drawer) controls.push(el.burger);
+                            var first = controls[0], last = controls[controls.length - 1];
+                            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+                            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+                        }
+                    }
                     if (e.key === "Escape") {
                         if (el.drawer.classList.contains("is-open")) bukaDrawer(false);
                         if (qvTerbuka) tutupQuickView();
